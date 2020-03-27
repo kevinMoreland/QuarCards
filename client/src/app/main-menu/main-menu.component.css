@@ -1,0 +1,17 @@
+:host {
+    display: block;
+    font-family: Helvetica;
+    text-align: center;
+}
+h1{
+    font-size: 5rem;
+    padding-top: 10rem;
+    padding-bottom: 4rem;
+}
+#startGameButton{
+    width: 30%;
+}
+.gameCodeForm{
+    width: 30%;
+    margin: auto;
+}

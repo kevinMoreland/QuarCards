@@ -1,0 +1,14 @@
+:host {
+    font-family: Helvetica;
+}
+.card{
+    padding: 10px;
+}
+#players{
+    padding-bottom: 20px;
+}
+
+#mycards{
+    padding-top: 20px;
+}
+
