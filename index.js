@@ -9,8 +9,15 @@ var app = express();
 
 const route = require('./routes/route.js');
 
+//get rid of deprecation warnings
+mongoose.set('useNewUrlParser', true);
+mongoose.set('useFindAndModify', false);
+mongoose.set('useCreateIndex', true);
+mongoose.set('useUnifiedTopology', true);
+
+
 //connect to mongodb
-mongoose.connect('mongodb://localhost:27017/quarantineCards');
+mongoose.connect('mongodb+srv://kevinMoreland:<Kk06230623>@cluster0-ya3i2.mongodb.net/test?retryWrites=true&w=majority');
 
 //on connection
 mongoose.connection.on('connected', ()=>{
@@ -19,10 +26,10 @@ mongoose.connection.on('connected', ()=>{
 
 //on connection error
 mongoose.connection.on('error', ()=>{
-    console.log('Error in db connection' +err);
+    console.log('Error in db connection');
 });
 
-//port no
+//port number
 const port = 3000;
 
 //adding middleware
@@ -34,9 +41,8 @@ app.use(bodyparser.json());
 //routes
 app.use('/api', route);
 
-// creating the route for the home route
 app.get('/', (req, res) => {
-    res.send('foobar');
+    res.send('hello world');
 })
 
 app.listen(port, ()=>{
