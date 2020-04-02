@@ -1,16 +1,25 @@
 //importing modules
-var express = require('express');
-var mongoose = require('mongoose');
-var bodyparser = require('body-parser');
-var cors = require('cors');
-var path = require('path');
+const express = require('express');
+const app = express();
+const http = require('http').createServer(app);
+const path = require('path');
+const cors = require('cors');
+const mongoose = require('mongoose');
+const bodyparser = require('body-parser');
 
-var app = express();
+const buildDirectory = '/dist/client';
 
-const route = require('./routes/route.js');
+var io = require('socket.io')(http);
+
+const port = process.env.PORT || 3000;
+
+//const route = require('./routes/route.js');
 
 //connect to mongodb
-mongoose.connect('mongodb://localhost:27017/quarantineCards');
+mongoose.connect('mongodb://localhost:27017/quarantineCards', {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+ });
 
 //on connection
 mongoose.connection.on('connected', ()=>{
@@ -22,24 +31,29 @@ mongoose.connection.on('error', ()=>{
     console.log('Error in db connection' +err);
 });
 
-//port no
-const port = 3000;
 
-//adding middleware
-app.use(cors());
+if (process.argv.includes('--dev')) {
+    app.use(cors());
+    console.log('\n**RUNNING SERVER IN DEV MODE**\n');
+}
+else {
+    app.use(express.static(__dirname + '/dist/client'));
+    app.get('/', (req, res) => {
+        res.sendFile(path.join(__dirname));
+    });
+}
+
+app.use('/*',function(req, res) {
+    res.sendFile(__dirname + `${buildDirectory}/index.html`);
+});
 
 //body parser
 app.use(bodyparser.json());
 
 //routes
-app.use('/api', route);
+//app.use('/api', route);
 
-// creating the route for the home route
-app.get('/', (req, res) => {
-    res.send('foobar');
-})
-
-app.listen(port, ()=>{
+http.listen(port, ()=>{
     console.log('Server started at port ' + port);
 
 })
