@@ -7,7 +7,7 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const bodyparser = require('body-parser');
 
-const buildDirectory = 'client/dist/client';
+const buildDirectory = '/client/dist/client';
 
 var io = require('socket.io')(http);
 
