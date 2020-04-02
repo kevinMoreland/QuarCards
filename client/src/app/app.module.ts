@@ -33,7 +33,7 @@ const appRoutes: Routes = [
     AppRoutingModule,
     RouterModule.forRoot(
       appRoutes,
-      { enableTracing: true } // <-- debugging purposes only, navigation events are logged
+      //{ enableTracing: true } // <-- debugging purposes only, navigation events are logged
     )
   ],
   

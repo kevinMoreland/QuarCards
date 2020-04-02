@@ -7,7 +7,7 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const bodyparser = require('body-parser');
 
-const buildDirectory = '/dist/client';
+const buildDirectory = 'client/dist/client';
 
 var io = require('socket.io')(http);
 
@@ -37,7 +37,7 @@ if (process.argv.includes('--dev')) {
     console.log('\n**RUNNING SERVER IN DEV MODE**\n');
 }
 else {
-    app.use(express.static(__dirname + '/dist/client'));
+    app.use(express.static(__dirname + buildDirectory));
     app.get('/', (req, res) => {
         res.sendFile(path.join(__dirname));
     });
