@@ -17,7 +17,7 @@ mongoose.set('useUnifiedTopology', true);
 
 
 //connect to mongodb
-mongoose.connect('mongodb+srv://kevinMoreland:<Kk06230623>@cluster0-ya3i2.mongodb.net/test?retryWrites=true&w=majority');
+mongoose.connect('mongodb+srv://kevinMoreland:Kk06230623@cluster0-ya3i2.mongodb.net/cardDB?retryWrites=true&w=majority');
 
 //on connection
 mongoose.connection.on('connected', ()=>{

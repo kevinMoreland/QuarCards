@@ -10,6 +10,7 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
 import { PlayingCardComponent } from './playing-card/playing-card.component';
 import { PlayerBlockComponent } from './player-block/player-block.component';
 import { MyCardsComponent } from './my-cards/my-cards.component';
+import { HttpClientModule } from '@angular/common/http'; 
 
 const appRoutes: Routes = [
   { path: 'game', component: GameViewComponent },
@@ -31,6 +32,7 @@ const appRoutes: Routes = [
   imports: [
     BrowserModule,
     AppRoutingModule,
+    HttpClientModule,
     RouterModule.forRoot(
       appRoutes,
       { enableTracing: true } // <-- debugging purposes only, navigation events are logged

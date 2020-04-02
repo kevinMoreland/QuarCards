@@ -1,6 +1,6 @@
 <div class="scene">
-    <div class="card" #gameCard (click)="onGameCardClick(gameCard)">
+    <div class="card" #gameCard (click)="onGameCardClick(gameCard, cardText)">
       <div class="card__face card__face--front"><p>flip me !</p></div>
-      <div class="card__face card__face--back"><p>Who's the most likely to....</p></div>
+      <div class="card__face card__face--back"><p #cardText>Who's the most likely to....</p></div>
       </div>
 </div>

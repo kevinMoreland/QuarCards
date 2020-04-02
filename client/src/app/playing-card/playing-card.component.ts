@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Input } from '@angular/core';
 
 @Component({
   selector: 'app-playing-card',
@@ -6,17 +7,22 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./playing-card.component.css']
 })
 export class PlayingCardComponent implements OnInit {
-
+  @Input() clickMethod;
   constructor() { }
 
   ngOnInit(): void {
   }
-  onGameCardClick(el : HTMLElement) {
+  onGameCardClick(cardEl : HTMLElement, cardTextEl: HTMLElement) {
 
     //only flip the card one way.
-    if(!el.classList.contains('is-flipped'))
+    if(!cardEl.classList.contains('is-flipped'))
     {
-      el.classList.toggle('is-flipped');
+      //get a random card not in the discard pile
+      this.clickMethod(cardTextEl);
+
+      //flip card
+      cardEl.classList.toggle('is-flipped');
+      
     }
     
   }
