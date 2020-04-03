@@ -2,6 +2,8 @@ import { Component, OnInit, ElementRef } from '@angular/core';
 import { SocketService } from '../socket.service';
 import { Subscription } from 'rxjs';
 import { NavigationStart, Router } from '@angular/router';
+import { CardService } from '../card.service';
+import { Output } from '@angular/core';
 
 import { browserRefresh } from '../app.component';
 
@@ -12,15 +14,26 @@ import { browserRefresh } from '../app.component';
 })
 export class GameViewComponent implements OnInit {
   browserRefresh: boolean;
+  @Output() currMode : String;
+  modeNum : number = 0;
+  modeNames : String[] = ["my-turn", "voting"];
 
   constructor( private socketService: SocketService,
-    private router: Router ) { }
+    private router: Router,
+    private cardService: CardService) { }
 
   ngOnInit(): void {
     this.browserRefresh = browserRefresh;
     if (this.browserRefresh) {
       this.router.navigate(['/']);
     }
+    this.modeNum = 0;
+    this.currMode = this.modeNames[this.modeNum];
   }
-  
+
+  changeState() : void {
+    this.modeNum = (this.modeNum + 1)%this.modeNames.length;
+    this.currMode = this.modeNames[this.modeNum];
+  }
+
 }

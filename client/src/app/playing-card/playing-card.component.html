@@ -1,6 +1,11 @@
-<div class="scene">
-    <div class="card" #gameCard (click)="onGameCardClick(gameCard)">
-      <div class="card__face card__face--front"><p>flip me !</p></div>
-      <div class="card__face card__face--back"><p>Who's the most likely to....</p></div>
-      </div>
+<div class="flip-container"  #cardFlipper (click) = onCardClick(cardFlipper)>
+	<div class="card flipper">
+		<div class="front">
+			<p>flip me !</p>
+		</div>
+		<div class="back">
+			<p #cardBackText>Back text not loaded ...</p>
+			<button #cardChoiceButton class = "choiceButton" #choiceButton (click) = "onCardPicked()">choose me !</button>
+    	</div>
+	</div>
 </div>
