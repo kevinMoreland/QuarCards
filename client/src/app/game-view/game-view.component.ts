@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { CardService } from '../card.service';
-import Card from 'src/entity/Card';
 import { Output } from '@angular/core';
 
 @Component({
@@ -9,7 +8,6 @@ import { Output } from '@angular/core';
   styleUrls: ['./game-view.component.css']
 })
 export class GameViewComponent implements OnInit {
-  availableCards: Card[] = new Array();
 
   @Output() currMode : String;
   modeNum : number = 0;
@@ -17,10 +15,7 @@ export class GameViewComponent implements OnInit {
 
   constructor(private cardService: CardService) { }
 
-  ngOnInit(): void {
-    this.cardService.getCards().subscribe(cards => 
-      this.availableCards = cards);
-
+  ngOnInit(): void {    
       this.modeNum = 0;
       this.currMode = this.modeNames[this.modeNum];
   }

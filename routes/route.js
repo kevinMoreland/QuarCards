@@ -17,7 +17,7 @@ router.get('/cards', async (req, res, next)=>{
 
 router.get('/cardByNum/:num', async (req, res, next)=>{
     try{
-        var card = await Cards.findOne({'card_num': req.body});
+        var card = await Cards.findOne({'card_num': req.params.num});
         res.send(card);
     }
     catch(error) {

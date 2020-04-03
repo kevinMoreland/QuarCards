@@ -1,13 +1,16 @@
 import { Component, OnInit, SimpleChanges } from '@angular/core';
 import { Input, ViewChild, ElementRef } from '@angular/core';
+import { CardService } from '../card.service';
+import Card from 'src/entity/Card';
 
 @Component({
   selector: 'app-playing-card',
   templateUrl: './playing-card.component.html',
   styleUrls: ['./playing-card.component.css']
 })
+
 export class PlayingCardComponent implements OnInit {
-  ngOnInit(): void {}
+
 
   @Input() currMode : String;
   @ViewChild("cardBackText", {read: ElementRef}) cardText: ElementRef;
@@ -15,6 +18,15 @@ export class PlayingCardComponent implements OnInit {
   @ViewChild("choiceButton", {read: ElementRef}) choiceButton: ElementRef;
 
   cardFlipTime : number = 600;
+  testCard : Card;
+
+  constructor(private cardService: CardService) { }
+
+  ngOnInit(): void {
+    //TODO randomly select a card
+    this.cardService.getCard(0).subscribe(card => 
+      this.testCard = card);
+  }
 
   //when the mode changes (players turn to pick card or vote  ), notify the card so it can transition to the new mode
   ngOnChanges(changes : SimpleChanges): void{
@@ -39,7 +51,8 @@ export class PlayingCardComponent implements OnInit {
         case "my-turn": {
           this.transitionCardToFace("back");
           
-          this.cardText.nativeElement.textContent = "here I will randomly insert from database";
+          //TODO: randomly select a card
+          this.cardText.nativeElement.textContent = this.testCard.card_text;
           break;
         }
       }
