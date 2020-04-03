@@ -1,7 +1,7 @@
 export default class Card {
     _id?: string;
     card_text: string;
-    card_num: number;
+    card_num: string;
 
     constructor(json: any) {
         if (json) {
