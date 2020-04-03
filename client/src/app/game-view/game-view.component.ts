@@ -1,4 +1,6 @@
-import { Component, OnInit, ElementRef } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { CardService } from '../card.service';
+import { Output } from '@angular/core';
 
 @Component({
   selector: 'app-game-view',
@@ -7,9 +9,19 @@ import { Component, OnInit, ElementRef } from '@angular/core';
 })
 export class GameViewComponent implements OnInit {
 
-  constructor() { }
+  @Output() currMode : String;
+  modeNum : number = 0;
+  modeNames : String[] = ["my-turn", "voting"];
 
-  ngOnInit(): void {
+  constructor(private cardService: CardService) { }
+
+  ngOnInit(): void {    
+      this.modeNum = 0;
+      this.currMode = this.modeNames[this.modeNum];
   }
-  
+
+  changeState() : void {
+    this.modeNum = (this.modeNum + 1)%this.modeNames.length;
+    this.currMode = this.modeNames[this.modeNum];
+  }
 }

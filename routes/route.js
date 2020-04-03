@@ -1,45 +1,28 @@
 const express = require('express');
 const router = express.Router();
 
-const Contact = require('../models/contacts');
+const Cards = require('../models/cards.js');
 
 //retrieving data from database
-router.get('/contacts', (req, res, next)=>{
-    Contact.find(function(err, contacts){
-        res.json(contacts);
-    })
+router.get('/cards', async (req, res, next)=>{
+    try{
+        var cards = await Cards.find();
+        res.send(cards);
+    }
+    catch(error) {
+        res.send({error: error.message})
+    }
+    
 });
 
-//adding data to database
-router.post('/contact', (req, res, next)=>{
-    let newContact = new Contact({
-        first_name: req.body.first_name,
-        last_name: req.body.last_name,
-        phone: req.body.phone
-    });
-
-    newContact.save((err, contact)=>{
-        if(err)
-        {
-            res.json({msg: 'Failed to add contact'});
-        }
-        else{
-            res.json({msg: 'Contact added successfully'});
-        }
-    });
-});
-
-//deleting from database
-router.delete('/contact/:id',(req, res, next) =>{
-    Contact.remove({_id: req.params.id}, function(err,result){
-        if(err)
-        {
-            res.json(err);
-        }
-        else{
-            res.json(result);
-        }
-    })
-});
+router.get('/cardByNum/:num', async (req, res, next)=>{
+    try{
+        var card = await Cards.findOne({'card_num': req.params.num});
+        res.send(card);
+    }
+    catch(error) {
+        res.send({error: error.message})
+    }
+})
 
 module.exports = router;
