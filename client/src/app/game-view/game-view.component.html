@@ -1,13 +1,15 @@
 <div class="container">
 
-    <div id = "players">
-        <div class = "card">
-            <div class = "row">
-                <div class="col-4"><app-player-block></app-player-block></div>
-                <div class="col-4"><app-player-block></app-player-block></div>
-                <div class="col-4"><app-player-block></app-player-block></div>
-                <div class="col-4"><app-player-block></app-player-block></div>
-                <div class="col-4"><app-player-block></app-player-block></div>
+    <div id = "row">
+        <div id = "players">
+            <div class = "card">
+                <div class = "row">
+                    <div class="col-4"><app-player-block></app-player-block></div>
+                    <div class="col-4"><app-player-block></app-player-block></div>
+                    <div class="col-4"><app-player-block></app-player-block></div>
+                    <div class="col-4"><app-player-block></app-player-block></div>
+                    <div class="col-4"><app-player-block></app-player-block></div>
+                </div>
             </div>
         </div>
     </div>
@@ -16,8 +18,18 @@
         <div class="col-4"><app-playing-card [currMode] = "currMode"></app-playing-card></div>
         <div class="col-4"><app-playing-card [currMode] = "currMode"></app-playing-card></div>
     </div>
-    <button (click) = "changeState()">Change Game State (voting or this players turn to pick card)</button>
-    <div id = "mycards"><app-my-cards></app-my-cards></div>
+    <div class = "row">
+        <div class="col"><button (click) = "changeState()">Change Game State (voting or this players turn to pick card)</button></div>
+    </div>
+
+    <div class = "row">
+        <div class = "col">
+            <div id = "mycards"><app-my-cards></app-my-cards></div>
+        </div>
+
+    </div>
+
+
 
     <div class="row">
         <div class="col">
