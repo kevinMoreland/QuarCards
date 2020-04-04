@@ -15,7 +15,7 @@ const port = process.env.PORT || 3000;
 
 var sessions = {};
 
-//const route = require('./routes/route.js');
+const route = require('./routes/route.js');
 
 //get rid of deprecation warnings
 mongoose.set('useNewUrlParser', true);
@@ -25,7 +25,7 @@ mongoose.set('useUnifiedTopology', true);
 
 
 //connect to mongodb
-mongoose.connect('mongodb+srv://kevinMoreland:Kk06230623@cluster0-ya3i2.mongodb.net/cardDB?retryWrites=true&w=majority');
+mongoose.connect(`mongodb+srv://kevinMoreland:${process.env.MONGO_PASSWORD}@cluster0-ya3i2.mongodb.net/cardDB?retryWrites=true&w=majority`);
 
 //on connection
 mongoose.connection.on('connected', () => {
@@ -101,6 +101,12 @@ io.on('connection', function(socket) {
         else {
             console.log('Room not found...');
         }
+    });
+
+    socket.on('chat msg', function(code, msg) {
+        console.log('message received:', msg);
+        console.log(io.sockets.adapter.rooms);
+        io.to(code).emit('chat msg', msg);
     });
 
     socket.on('disconnect', function() {

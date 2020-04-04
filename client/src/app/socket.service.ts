@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import * as io from 'socket.io-client';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -24,7 +25,7 @@ export class SocketService {
       this.connectedRoom = code;
       console.log('connected room:', this.connectedRoom);
     });
-    //this.socket.emit('hello from client');
+
   }
 
   disconnectSocket() {
@@ -51,5 +52,23 @@ export class SocketService {
     else {
       this.socket.emit('joinLobby', desiredRoom);
     }
+  }
+
+  sendChatMessage() {
+    this.socket.emit('chat msg', this.socket.connectedRoom, `hello from socket ${this.socket.id}`);
+  }
+
+  receiveChatMessage() {
+    let observable = new Observable<string>( observer => {
+      this.socket.on('chat msg', (msg) => {
+        console.log(msg);
+        observer.next(msg);
+      });
+      return () => {
+        this.disconnectSocket();
+      };
+    });
+
+    return observable;
   }
 }

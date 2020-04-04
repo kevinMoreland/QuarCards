@@ -17,6 +17,10 @@
     </div>
     <button (click) = "changeState()">Change Game State (voting or this players turn to pick card)</button>
     <div id = "mycards"><app-my-cards></app-my-cards></div>
-    
+
+    <div>
+        <p *ngFor="let msg of chatMessages"> {{ msg }} </p>
+        <button (click)="onSendChat()" style="margin-bottom: 10%;">Send Chat</button>
+    </div>
 </div>
         
