@@ -18,9 +18,6 @@ export class GameViewComponent implements OnInit {
   modeNum : number = 0;
   modeNames : String[] = ["my-turn", "voting"];
   routingSubscription: Subscription;
-  chatSubscription: Subscription;
-  chatMessages: string[] = [];
-  message: string;
 
   constructor( private socketService: SocketService,
     private router: Router,
@@ -41,11 +38,6 @@ export class GameViewComponent implements OnInit {
         this.socketService.disconnectSocket();
       }
     });
-
-    this.chatSubscription = this.socketService.receiveChatMessage().subscribe( (msg) => {
-      console.log(this.chatMessages);
-      this.chatMessages.push(msg);
-    });
   }
 
   changeState() : void {
@@ -53,17 +45,9 @@ export class GameViewComponent implements OnInit {
     this.currMode = this.modeNames[this.modeNum];
   }
 
-  onSendChat(): void {
-    this.socketService.sendChatMessage(this.message);
-    this.message = '';
-  }
-
   ngOnDestroy(): void {
     if (this.routingSubscription) {
       this.routingSubscription.unsubscribe();
-    }
-    if (this.chatSubscription) {
-      this.chatSubscription.unsubscribe();
     }
   }
 
