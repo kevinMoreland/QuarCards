@@ -1,0 +1,35 @@
+<button class="open-button tri-right btm-left"
+  (click)="onToggleChat(true)"
+  [ngStyle]="{ 'width' : chatOpened ? '3.5em' : '4.5em' }"
+  [ngClass]="{ 'x' : chatOpened }">{{ chatOpened ? 'X' : 'Chat' }}</button>
+
+<div class="chat-popup" id="myForm" [ngStyle]="{ 'display' : chatOpened ? 'block' : 'none' }">
+  <form class="form-container">
+    <div class="row">
+      <div class="col">
+        <h2>Chat</h2>
+      </div>
+      <div class="col text-right">
+        <button type="button" class="btn cancel" (click)="onToggleChat(false)">X</button>
+      </div>
+    </div>
+    <div class="row messages-container">
+      <div class="col">
+          <div class="chat-message"
+            *ngFor="let msg of chatMessages; let i = index"
+            [ngStyle]="{ 'background-color' :  i % 2 == 0 ? '#dbdbdb' : 'white'}"> {{ msg }}
+          </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <textarea placeholder="Write something to your friends!" [(ngModel)]="message" name="msg" rows="2" required></textarea>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col text-right">
+        <button type="submit" class="btn" (click)="onSendChat()">Send</button>
+      </div>
+    </div>
+  </form>
+</div>
