@@ -13,7 +13,7 @@ var io = require('socket.io')(http);
 
 const port = process.env.PORT || 3000;
 
-//const route = require('./routes/route.js');
+const route = require('./routes/route.js');
 
 //get rid of deprecation warnings
 mongoose.set('useNewUrlParser', true);
