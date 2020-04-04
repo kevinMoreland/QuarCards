@@ -5,17 +5,31 @@
 
 <div class="chat-popup" id="myForm" [ngStyle]="{ 'display' : chatOpened ? 'block' : 'none' }">
   <form class="form-container">
-    <button type="button" class="btn cancel" (click)="onToggleChat(false)">X</button>
-    <h2>Chat</h2>
-    <div class="messages-container">
-      <div class="chat-message"
-        *ngFor="let msg of chatMessages; let i = index"
-        [ngStyle]="{ 'background-color' :  i % 2 == 0 ? '#dbdbdb' : 'white'}"> {{ msg }}
+    <div class="row">
+      <div class="col">
+        <h2>Chat</h2>
+      </div>
+      <div class="col text-right">
+        <button type="button" class="btn cancel" (click)="onToggleChat(false)">X</button>
       </div>
     </div>
-
-    <textarea placeholder="Write something to your friends!" [(ngModel)]="message" name="msg" rows="2" required></textarea>
-
-    <button type="submit" class="btn" style="margin-right: 20%;" (click)="onSendChat()">Send</button>
+    <div class="row messages-container">
+      <div class="col">
+          <div class="chat-message"
+            *ngFor="let msg of chatMessages; let i = index"
+            [ngStyle]="{ 'background-color' :  i % 2 == 0 ? '#dbdbdb' : 'white'}"> {{ msg }}
+          </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <textarea placeholder="Write something to your friends!" [(ngModel)]="message" name="msg" rows="2" required></textarea>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col text-right">
+        <button type="submit" class="btn" (click)="onSendChat()">Send</button>
+      </div>
+    </div>
   </form>
 </div>
