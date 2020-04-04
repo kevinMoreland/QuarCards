@@ -44,6 +44,7 @@
     border: 3px solid #5c5c5c;
     border-radius: 2px;
     z-index: 9;
+    height: 70%;
 }
 
 
@@ -51,6 +52,7 @@
 
 .form-container {
     max-width: 300px;
+    height: 100%;
     padding: 10px;
     background-color: white;
 }
@@ -108,11 +110,13 @@
 .chat-message {
     font-size: 14px;
     padding: 10px 5px;
+    bottom: 0;
 }
 
 .messages-container {
-    max-height: 200px;
-    overflow-y: scroll;
+    height: 60%;
+    overflow-y: auto;
+    bottom: 0;
 }
 
 /* Add some hover effects to buttons */
