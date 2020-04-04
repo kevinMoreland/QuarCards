@@ -16,8 +16,8 @@ export class SocketService {
       return;
     }
     //var hostname = 'http://localhost:3000';
-    var hostname = 'https://strawberry-sundae-17314.herokuapp.com';
-    //var hostname = 'http://localhost:5000';
+    //var hostname = 'https://strawberry-sundae-17314.herokuapp.com';
+    var hostname = 'http://localhost:5000';
 
     this.socket = io(hostname);
 
@@ -54,13 +54,13 @@ export class SocketService {
     }
   }
 
-  sendChatMessage() {
-    this.socket.emit('chat msg', this.socket.connectedRoom, `hello from socket ${this.socket.id}`);
+  sendChatMessage(message: string) {
+    this.socket.emit('clientSendChat', this.socket.connectedRoom, message);
   }
 
   receiveChatMessage() {
     let observable = new Observable<string>( observer => {
-      this.socket.on('chat msg', (msg) => {
+      this.socket.on('serverSendChat', (msg) => {
         console.log(msg);
         observer.next(msg);
       });

@@ -84,7 +84,7 @@ io.on('connection', function(socket) {
 
         console.log(sessions);
         console.log(socket.roomCode);
-        io.emit('connected', roomCode);
+        io.to(socket.id).emit('connected', roomCode);
     });
 
     socket.on('joinLobby', function(code) {
@@ -96,17 +96,17 @@ io.on('connection', function(socket) {
             socket.join(code);
 
             console.log(sessions);
-            io.emit('connected', code);
+            io.to(socket.id).emit('connected', code);
         }
         else {
             console.log('Room not found...');
         }
     });
 
-    socket.on('chat msg', function(code, msg) {
-        console.log('message received:', msg);
+    socket.on('clientSendChat', function(code, msg) {
+        console.log(`socket ${socket.id} wants to send a chat to room ${code}`);
         console.log(io.sockets.adapter.rooms);
-        io.to(code).emit('chat msg', msg);
+        io.to(code).emit('serverSendChat', msg);
     });
 
     socket.on('disconnect', function() {

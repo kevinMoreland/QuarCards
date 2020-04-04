@@ -20,7 +20,9 @@
 
     <div>
         <p *ngFor="let msg of chatMessages"> {{ msg }} </p>
+        <input type="text" [(ngModel)]="message">
         <button (click)="onSendChat()" style="margin-bottom: 10%;">Send Chat</button>
     </div>
+
 </div>
         
