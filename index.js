@@ -54,24 +54,16 @@ if (process.argv.includes('--dev')) {
 }
 else {
     app.use(express.static(__dirname + buildDirectory));
-    app.get('/', (req, res) => {
+    app.get('/', async (req, res) => {
         res.sendFile(path.join(__dirname));
     });
 }
-
-app.use('/*',function(req, res) {
-    res.sendFile(__dirname + `${buildDirectory}/index.html`);
-});
 
 //body parser
 app.use(bodyparser.json());
 
 //routes
 app.use('/api', route);
-
-app.get('/', (req, res) => {
-    res.send('hello world');
-})
 
 io.on('connection', function(socket) {
     console.log(`user ${socket.id} has connected`);
@@ -125,6 +117,12 @@ io.on('connection', function(socket) {
         console.log(sessions);
     });
 });
+
+if (!process.argv.includes('--dev')) {
+    app.use('/*', async function(req, res) {
+        res.sendFile(__dirname + `${buildDirectory}/index.html`);
+    });
+}
 
 http.listen(port, ()=>{
     console.log('Server started at port ' + port);
