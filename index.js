@@ -7,13 +7,18 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const bodyparser = require('body-parser');
 
-const buildDirectory = '/client/dist/client';
+//data structures needed
+const Queue = require('./data-structures/Queue');
+const SessionData = require('./data-structures/SessionData');
 
+//socket stuff
 var io = require('socket.io')(http);
-
 const port = process.env.PORT || 3000;
 
+const buildDirectory = '/client/dist/client';
+
 var sessions = {};
+
 
 const route = require('./routes/route.js');
 
@@ -70,12 +75,20 @@ io.on('connection', function(socket) {
     //console.log(socket.roomCode);
     socket.on('newLobby', function() {
         var roomCode = generateCode();
-        sessions[roomCode] = [socket.id];
+
+        //collect all information to create the new session
+        var sessionData = new SessionData();
+        sessionData.playerQueue = new Queue();
+        sessionData.playerQueue.enqueue([socket.id]);
+
+        //start up the new session
+        sessions[roomCode] = sessionData;
         socket.roomCode = roomCode;
         socket.join(roomCode);
 
-        console.log(sessions);
         console.log(socket.roomCode);
+        console.log("position number: " + sessions[roomCode].playerQueue.getLength());
+        console.log("using code " + roomCode);
         io.to(socket.id).emit('connected', roomCode);
     });
 
@@ -83,11 +96,12 @@ io.on('connection', function(socket) {
         code = code.toUpperCase();
         console.log(code);
         if (sessions[code]) {
-            sessions[code].push(socket.id);
+            sessions[code].playerQueue.enqueue(socket.id);
             socket.roomCode = code;
             socket.join(code);
 
-            console.log(sessions);
+            console.log("position number: " + sessions[code].playerQueue.getLength());
+            console.log("using code: " + code);
             io.to(socket.id).emit('connected', code);
         }
         else {
@@ -108,13 +122,31 @@ io.on('connection', function(socket) {
             return;
         }
 
-        sessions[socket.roomCode].splice(sessions[socket.roomCode].indexOf(socket.id), 1);
+        //remove this player's socket id from the session
+        sessions[socket.roomCode].playerQueue.remove(socket.id);
 
-        if (sessions[socket.roomCode].length == 0) {
+        //delete session if there are no more players
+        if (sessions[socket.roomCode].playerQueue.getLength() == 0) {
             delete sessions[socket.roomCode];
         }
 
         console.log(sessions);
+    });
+
+    socket.on('clientGetIsTurn', function(code) {
+        io.to(code).emit('serverSendIsTurn', sessions[code].playerQueue.peek() == socket.id);
+    });
+    socket.on('clientGivingUpTurn', function(code) {
+        if(sessions[code].playerQueue.peek() == socket.id)
+        {
+            var prevQueueHead = sessions[code].playerQueue.dequeue();
+            sessions[code].playerQueue.enqueue(prevQueueHead);
+            console.log("Gave up turn, new queue looks like " + sessions[code].playerQueue.asArray());
+        }
+        else
+        {
+            console.log("It is not my turn, can't give up turn...");
+        }
     });
 });
 

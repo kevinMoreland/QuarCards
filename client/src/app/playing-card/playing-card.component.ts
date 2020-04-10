@@ -1,6 +1,7 @@
 import { Component, OnInit, SimpleChanges } from '@angular/core';
 import { Input, ViewChild, ElementRef } from '@angular/core';
 import { CardService } from '../card.service';
+import { SocketService } from '../socket.service';
 import Card from 'src/entity/Card';
 
 @Component({
@@ -20,7 +21,8 @@ export class PlayingCardComponent implements OnInit {
   cardFlipTime : number = 600;
   testCard : Card;
 
-  constructor(private cardService: CardService) { }
+  constructor(private cardService: CardService,
+              private socketService: SocketService) { }
 
   ngOnInit(): void {
     //TODO randomly select a card
@@ -48,6 +50,12 @@ export class PlayingCardComponent implements OnInit {
           this.cardText.nativeElement.textContent = "vote above !";
           break;
         }
+        case "waiting": {
+          this.transitionCardToFace("front");
+          
+          this.cardText.nativeElement.textContent = "waiting ...";
+          break;
+        }
         case "my-turn": {
           this.transitionCardToFace("back");
           
@@ -60,7 +68,8 @@ export class PlayingCardComponent implements OnInit {
       //disable or enable the button to choose a card
       let choiceButtonIsDisabled : Boolean = this.choiceButton.nativeElement.classList.contains('disabled');
       if((this.currMode == "voting" && !choiceButtonIsDisabled) ||
-         (this.currMode == "my-turn" && choiceButtonIsDisabled))
+         (this.currMode == "my-turn" && choiceButtonIsDisabled) ||
+         (this.currMode == "waiting" && !choiceButtonIsDisabled))
       {
         this.choiceButton.nativeElement.classList.toggle('disabled');
       }
@@ -100,6 +109,8 @@ export class PlayingCardComponent implements OnInit {
   }
 
   onCardPicked() : void{
-    alert("a card was picked!");
+    console.log("card picked: " + this.cardText.nativeElement.textContent);
+
+    this.socketService.giveUpTurn();
   }
 }

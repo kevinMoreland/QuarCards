@@ -16,7 +16,7 @@ export class GameViewComponent implements OnInit {
   browserRefresh: boolean;
   @Output() currMode : String;
   modeNum : number = 0;
-  modeNames : String[] = ["my-turn", "voting"];
+  modeNames : String[] = ["my-turn", "voting", "waiting"];
   routingSubscription: Subscription;
 
   constructor( private socketService: SocketService,
@@ -26,12 +26,13 @@ export class GameViewComponent implements OnInit {
     }
 
   ngOnInit(): void {
+    console.log("init game view");
     this.browserRefresh = browserRefresh;
     if (this.browserRefresh) {
       this.router.navigate(['/']);
     }
-    this.modeNum = 0;
-    this.currMode = this.modeNames[this.modeNum];
+
+    //this.updateGameMode();
 
     this.routingSubscription = this.router.events.subscribe( event => {
       if (event instanceof NavigationStart ) {
@@ -39,11 +40,15 @@ export class GameViewComponent implements OnInit {
       }
     });
   }
-
-  changeState() : void {
-    this.modeNum = (this.modeNum + 1)%this.modeNames.length;
-    this.currMode = this.modeNames[this.modeNum];
+  
+  printIsTurn() : void {
+    this.socketService.getIsTurn();
   }
+
+  giveUpTurn() : void {
+    this.socketService.giveUpTurn();
+  }
+
 
   ngOnDestroy(): void {
     if (this.routingSubscription) {

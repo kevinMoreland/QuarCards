@@ -15,13 +15,13 @@ export class SocketService {
     if (this.socket) {
       return;
     }
-    //var hostname = 'http://localhost:3000';
-    var hostname = 'https://strawberry-sundae-17314.herokuapp.com';
+    var hostname = 'http://localhost:3000';
+    //var hostname = 'https://strawberry-sundae-17314.herokuapp.com';
     //var hostname = 'http://localhost:5000';
 
     this.socket = io(hostname);
 
-    this.socket.on('connected', function(code) {
+    this.socket.on('connected', (code) => {
       this.connectedRoom = code;
       console.log('connected room:', this.connectedRoom);
     });
@@ -55,7 +55,7 @@ export class SocketService {
   }
 
   sendChatMessage(message: string) {
-    this.socket.emit('clientSendChat', this.socket.connectedRoom, message);
+    this.socket.emit('clientSendChat', this.connectedRoom, message);
   }
 
   receiveChatMessage() {
@@ -71,4 +71,20 @@ export class SocketService {
 
     return observable;
   }
+
+  giveUpTurn(){
+    this.socket.emit('clientGivingUpTurn', this.connectedRoom);
+  }
+  getIsTurn() : String{
+
+    this.socket.emit('clientGetIsTurn', this.connectedRoom);
+    
+    this.socket.on('serverSendIsTurn', (msg) => {
+      console.log("(socket id: " + this.socket.id +") Is it my turn (true = yes/ false = no): " + msg);
+      return msg;
+    });
+    return "";
+  }
+
+
 }
