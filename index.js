@@ -125,11 +125,20 @@ io.on('connection', function(socket) {
             return;
         }
 
+        var isTurn = sessions[socket.roomCode].playerQueue.peek() == socket.id;
+
         //remove this player's socket id from the session
         sessions[socket.roomCode].playerQueue.remove(socket.id);
+        var roomIsEmpty = (sessions[socket.roomCode].playerQueue.getLength() == 0);
 
-        //delete session if there are no more players
-        if (sessions[socket.roomCode].playerQueue.getLength() == 0) {
+        //if it was this player's turn when disconnected, ensure turn is transferred to next player if room isn't empty
+        if(isTurn && !roomIsEmpty)
+        {
+            io.to(sessions[socket.roomCode].playerQueue.peek()).emit('serverSendIsTurn', true);
+        }
+
+        //delete room if there are no more players
+        if (roomIsEmpty) {
             delete sessions[socket.roomCode];
         }
 
