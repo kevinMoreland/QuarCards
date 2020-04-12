@@ -17,20 +17,24 @@ export class MainMenuComponent implements OnInit {
 
   ngOnInit(): void {
     this.socketService.setUpSocket();
-    this.isConnectedSubscription = this.socketService.getIsConnected().subscribe( () => {
-      this.router.navigate(['/game']);
-    });
   }
 
   onStartGame() {
     this.socketService.joinNewRoom();
     //this.router.navigate(['/game']);
+    this.onConnectGoToGame();
   }
 
   onJoinGame() {
     this.socketService.joinExistingRoom(this.lobbyCode);
-    alert("should be joining game");
     //this.router.navigate(['/game']);
+    this.onConnectGoToGame();
+  }
+
+  onConnectGoToGame(){
+    this.isConnectedSubscription = this.socketService.getIsConnected().subscribe( () => {
+      this.router.navigate(['/game']);
+    });
   }
 
   ngOnDestroy(): void {
