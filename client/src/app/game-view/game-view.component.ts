@@ -2,10 +2,10 @@ import { Component, OnInit, ElementRef } from '@angular/core';
 import { SocketService } from '../socket.service';
 import { Subscription } from 'rxjs';
 import { NavigationStart, Router } from '@angular/router';
-import { CardService } from '../card.service';
 import { Output } from '@angular/core';
 
 import { browserRefresh } from '../app.component';
+enum cardMode {myTurn, voting, waiting};
 
 @Component({
   selector: 'app-game-view',
@@ -14,9 +14,9 @@ import { browserRefresh } from '../app.component';
 })
 export class GameViewComponent implements OnInit {
   browserRefresh: boolean;
-  @Output() currMode : String;
-  modeNum : number = 0;
-  modeNames : String[] = ["my-turn", "voting", "waiting"];
+  @Output() currMode : cardMode;
+
+  cardMode: cardMode = cardMode.myTurn;
 
   routingSubscription: Subscription;
   isTurnSubscription: Subscription;
@@ -53,11 +53,11 @@ export class GameViewComponent implements OnInit {
     alert("is turn? " + isTurn);
     if(isTurn){
       //my-turn
-      this.currMode = this.modeNames[0];
+      this.currMode = cardMode.myTurn;
     }
     else{
       //voting
-      this.currMode = this.modeNames[1];
+      this.currMode = cardMode.voting;
     }
   }
 

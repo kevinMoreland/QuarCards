@@ -32,9 +32,11 @@ export class MainMenuComponent implements OnInit {
   }
 
   onConnectGoToGame(){
-    this.isConnectedSubscription = this.socketService.getIsConnected().subscribe( () => {
-      this.router.navigate(['/game']);
-    });
+    if(!this.isConnectedSubscription){
+      this.isConnectedSubscription = this.socketService.getIsConnected().subscribe( () => {
+        this.router.navigate(['/game']);
+      });
+    }
   }
 
   ngOnDestroy(): void {

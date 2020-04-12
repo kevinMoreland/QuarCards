@@ -4,6 +4,8 @@ import { CardService } from '../card.service';
 import { SocketService } from '../socket.service';
 import Card from 'src/entity/Card';
 
+enum cardMode {myTurn, voting, waiting};
+
 @Component({
   selector: 'app-playing-card',
   templateUrl: './playing-card.component.html',
@@ -13,7 +15,7 @@ import Card from 'src/entity/Card';
 export class PlayingCardComponent implements OnInit {
 
 
-  @Input() currMode : String;
+  @Input() currMode : cardMode;
   @ViewChild("cardBackText", {read: ElementRef}) cardText: ElementRef;
   @ViewChild("cardFlipper", {read: ElementRef}) card: ElementRef;
   @ViewChild("choiceButton", {read: ElementRef}) choiceButton: ElementRef;
@@ -44,19 +46,19 @@ export class PlayingCardComponent implements OnInit {
     //check null since initially on load, ngOnChanges detects a change in currMode when the card is still undefined
     if(this.card != null) {
       switch(this.currMode){
-        case "voting": {
+        case cardMode.voting: {
           this.transitionCardToFace("front");
           
           this.cardText.nativeElement.textContent = "vote above !";
           break;
         }
-        case "waiting": {
+        case cardMode.waiting: {
           this.transitionCardToFace("front");
           
           this.cardText.nativeElement.textContent = "waiting ...";
           break;
         }
-        case "my-turn": {
+        case cardMode.myTurn: {
           this.transitionCardToFace("back");
           
           //TODO: randomly select a card
@@ -66,13 +68,18 @@ export class PlayingCardComponent implements OnInit {
       }
 
       //disable or enable the button to choose a card
-      let choiceButtonIsDisabled : Boolean = this.choiceButton.nativeElement.classList.contains('disabled');
-      if((this.currMode == "voting" && !choiceButtonIsDisabled) ||
-         (this.currMode == "my-turn" && choiceButtonIsDisabled) ||
-         (this.currMode == "waiting" && !choiceButtonIsDisabled))
-      {
-        this.choiceButton.nativeElement.classList.toggle('disabled');
-      }
+      this.disableCardChooseButton();
+    }
+  }
+
+  disableCardChooseButton()
+  {
+    let choiceButtonIsDisabled : Boolean = this.choiceButton.nativeElement.classList.contains('disabled');
+    if((this.currMode == cardMode.voting && !choiceButtonIsDisabled) ||
+       (this.currMode == cardMode.myTurn && choiceButtonIsDisabled) ||
+       (this.currMode == cardMode.waiting && !choiceButtonIsDisabled))
+    {
+      this.choiceButton.nativeElement.classList.toggle('disabled');
     }
   }
 
@@ -102,7 +109,7 @@ export class PlayingCardComponent implements OnInit {
   }
 
   onCardClick(card : HTMLElement) : void{
-    if(this.currMode == "my-turn")
+    if(this.currMode == cardMode.myTurn)
     {
       card.classList.toggle('flip');
     }
