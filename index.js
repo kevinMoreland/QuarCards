@@ -108,7 +108,7 @@ io.on('connection', function(socket) {
             io.to(socket.id).emit('connected', code, isTurn);
         }
         else {
-            console.log('Room not found...');
+            console.log("Room not found: " + code);
         }
     });
 

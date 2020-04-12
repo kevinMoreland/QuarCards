@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import * as io from 'socket.io-client';
 import { Observable } from 'rxjs';
-import { resolve } from 'dns';
 
 @Injectable({
   providedIn: 'root'
@@ -29,6 +28,19 @@ export class SocketService {
       console.log("connected room: " + this.connectedRoom + ", is turn: " + this.isTurn);
     });
 
+  }
+
+  getIsConnected() : Observable<boolean>{
+
+    //this.socket.emit('clientGetIsTurn', this.connectedRoom);
+    let observable = new Observable<boolean>( observer => {
+      this.socket.on('connected', (code, turn) => {
+        console.log("is connected to " + code + ", and is turn? " + turn);
+        observer.next(turn);
+      });
+    });
+
+    return observable;
   }
 
   disconnectSocket() {
