@@ -61,12 +61,6 @@ export class GameViewComponent implements OnInit {
     }
   }
 
-
-  giveUpTurn() : void {
-    this.socketService.giveUpTurn();
-  }
-
-
   ngOnDestroy(): void {
     if (this.routingSubscription) {
       this.routingSubscription.unsubscribe();

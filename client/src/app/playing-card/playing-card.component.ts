@@ -30,20 +30,20 @@ export class PlayingCardComponent implements OnInit {
     //TODO randomly select a card
     this.cardService.getCard(0).subscribe(card => 
       this.testCard = card);
+
   }
 
   //when the mode changes (players turn to pick card or vote  ), notify the card so it can transition to the new mode
   ngOnChanges(changes : SimpleChanges): void{
     if(changes.currMode) {
-      if(this.card != null) {
-        this.transitionToNewMode();
-      }
+      this.transitionToNewMode();
     }
   }
 
   //modify the text and flip the cards as necessary to enter the new mode
   transitionToNewMode() : void {
     //check null since initially on load, ngOnChanges detects a change in currMode when the card is still undefined
+    //TODO: Fix issue where initially, the cards don't transition to new mode since card is null when currMode changes
     if(this.card != null) {
       switch(this.currMode){
         case cardMode.voting: {
@@ -66,14 +66,12 @@ export class PlayingCardComponent implements OnInit {
           break;
         }
       }
-
-      //disable or enable the button to choose a card
       this.disableCardChooseButton();
     }
   }
 
-  disableCardChooseButton()
-  {
+  //disable the choice button that displays when it is a player's turn to pick a card
+  disableCardChooseButton(){
     let choiceButtonIsDisabled : Boolean = this.choiceButton.nativeElement.classList.contains('disabled');
     if((this.currMode == cardMode.voting && !choiceButtonIsDisabled) ||
        (this.currMode == cardMode.myTurn && choiceButtonIsDisabled) ||
