@@ -9,6 +9,7 @@ import { resolve } from 'dns';
 export class SocketService {
   socket: any = null;
   connectedRoom: string = '';
+  isTurn: boolean = null;
 
   constructor() { }
 
@@ -22,9 +23,10 @@ export class SocketService {
 
     this.socket = io(hostname);
 
-    this.socket.on('connected', (code) => {
+    this.socket.on('connected', (code, turn) => {
       this.connectedRoom = code;
-      console.log('connected room:', this.connectedRoom);
+      this.isTurn = turn;
+      console.log("connected room: " + this.connectedRoom + ", is turn: " + this.isTurn);
     });
 
   }
@@ -76,17 +78,21 @@ export class SocketService {
   giveUpTurn(){
     this.socket.emit('clientGivingUpTurn', this.connectedRoom);
   }
-  getIsTurn() : Promise<String>{
+  getIsTurn() : Observable<boolean>{
 
-    this.socket.emit('clientGetIsTurn', this.connectedRoom);
-
-    let promise = new Promise<string>( (resolve) => {
+    //this.socket.emit('clientGetIsTurn', this.connectedRoom);
+    let observable = new Observable<boolean>( observer => {
       this.socket.on('serverSendIsTurn', (msg) => {
-        resolve(msg);
+        this.isTurn = msg;
+        console.log("is turn? " + msg);
+        observer.next(msg);
       });
+      return () => {
+        this.disconnectSocket();
+      };
     });
 
-    return promise;
+    return observable;
   }
 
 

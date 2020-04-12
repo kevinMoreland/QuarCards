@@ -89,7 +89,8 @@ io.on('connection', function(socket) {
         console.log(socket.roomCode);
         console.log("position number: " + sessions[roomCode].playerQueue.getLength());
         console.log("using code " + roomCode);
-        io.to(socket.id).emit('connected', roomCode);
+        var isTurn = sessions[roomCode].playerQueue.peek() == socket.id;
+        io.to(socket.id).emit('connected', roomCode, isTurn);
     });
 
     socket.on('joinLobby', function(code) {
@@ -102,7 +103,9 @@ io.on('connection', function(socket) {
 
             console.log("position number: " + sessions[code].playerQueue.getLength());
             console.log("using code: " + code);
-            io.to(socket.id).emit('connected', code);
+
+            var isTurn = sessions[code].playerQueue.peek() == socket.id;
+            io.to(socket.id).emit('connected', code, isTurn);
         }
         else {
             console.log('Room not found...');
@@ -133,15 +136,14 @@ io.on('connection', function(socket) {
         console.log(sessions);
     });
 
-    socket.on('clientGetIsTurn', function(code) {
-        io.to(code).emit('serverSendIsTurn', sessions[code].playerQueue.peek() == socket.id);
-    });
     socket.on('clientGivingUpTurn', function(code) {
         if(sessions[code].playerQueue.peek() == socket.id)
         {
             var prevQueueHead = sessions[code].playerQueue.dequeue();
             sessions[code].playerQueue.enqueue(prevQueueHead);
             console.log("Gave up turn, new queue looks like " + sessions[code].playerQueue.asArray());
+            io.to(socket.id).emit('serverSendIsTurn', false);
+            io.to(sessions[code].playerQueue.peek()).emit('serverSendIsTurn', true);
         }
         else
         {

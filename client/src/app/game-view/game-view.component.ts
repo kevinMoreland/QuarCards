@@ -17,7 +17,9 @@ export class GameViewComponent implements OnInit {
   @Output() currMode : String;
   modeNum : number = 0;
   modeNames : String[] = ["my-turn", "voting", "waiting"];
+
   routingSubscription: Subscription;
+  isTurnSubscription: Subscription;
 
   constructor( private socketService: SocketService,
     private router: Router,
@@ -37,13 +39,20 @@ export class GameViewComponent implements OnInit {
         this.socketService.disconnectSocket();
       }
     });
-    
-    //uncommenting out the below results in an error
-    //this.printIsTurn();
+
+    this.isTurnSubscription = this.socketService.getIsTurn().subscribe( (msg) => {
+      this.socketService.isTurn = msg;
+      if(msg == true){
+        this.currMode = this.modeNames[0];
+      }
+      else{
+        this.currMode = this.modeNames[1];
+      }
+    });
   }
   
   printIsTurn() : void {
-    this.socketService.getIsTurn().then((value) => alert("is turn? " + value));
+    alert("is turn? " + this.socketService.isTurn);
   }
 
 
@@ -55,6 +64,9 @@ export class GameViewComponent implements OnInit {
   ngOnDestroy(): void {
     if (this.routingSubscription) {
       this.routingSubscription.unsubscribe();
+    }
+    if(this.isTurnSubscription) {
+      this.isTurnSubscription.unsubscribe();
     }
   }
 
