@@ -50,13 +50,10 @@ export class GameViewComponent implements OnInit {
   }
   
   updateCardMode(isTurn : boolean) : void {
-    alert("is turn? " + isTurn);
     if(isTurn){
-      //my-turn
       this.currMode = cardMode.myTurn;
     }
     else{
-      //voting
       this.currMode = cardMode.voting;
     }
   }
