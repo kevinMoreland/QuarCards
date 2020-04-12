@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import * as io from 'socket.io-client';
 import { Observable } from 'rxjs';
+import { resolve } from 'dns';
 
 @Injectable({
   providedIn: 'root'
@@ -36,13 +37,13 @@ export class SocketService {
     this.connectedRoom = '';
   }
 
-  joinNewRoom() {
+  joinNewRoom(): void {
     if (this.connectedRoom !== '') {
       console.log("Cannot connect to new lobby while in another lobby");
     }
     else {
       this.socket.emit('newLobby');
-    }
+    }    
   }
 
   joinExistingRoom(desiredRoom) {
@@ -75,15 +76,17 @@ export class SocketService {
   giveUpTurn(){
     this.socket.emit('clientGivingUpTurn', this.connectedRoom);
   }
-  getIsTurn() : String{
+  getIsTurn() : Promise<String>{
 
     this.socket.emit('clientGetIsTurn', this.connectedRoom);
-    
-    this.socket.on('serverSendIsTurn', (msg) => {
-      console.log("(socket id: " + this.socket.id +") Is it my turn (true = yes/ false = no): " + msg);
-      return msg;
+
+    let promise = new Promise<string>( (resolve) => {
+      this.socket.on('serverSendIsTurn', (msg) => {
+        resolve(msg);
+      });
     });
-    return "";
+
+    return promise;
   }
 
 

@@ -32,18 +32,20 @@ export class GameViewComponent implements OnInit {
       this.router.navigate(['/']);
     }
 
-    //this.updateGameMode();
-
     this.routingSubscription = this.router.events.subscribe( event => {
       if (event instanceof NavigationStart ) {
         this.socketService.disconnectSocket();
       }
     });
+    
+    //uncommenting out the below results in an error
+    //this.printIsTurn();
   }
   
   printIsTurn() : void {
-    this.socketService.getIsTurn();
+    this.socketService.getIsTurn().then((value) => alert("is turn? " + value));
   }
+
 
   giveUpTurn() : void {
     this.socketService.giveUpTurn();
