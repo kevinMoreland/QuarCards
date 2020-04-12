@@ -17,7 +17,7 @@ export class MainMenuComponent implements OnInit {
 
   ngOnInit(): void {
     this.socketService.setUpSocket();
-    this.isConnectedSubscription = this.socketService.getIsConnected().subscribe( (msg) => {
+    this.isConnectedSubscription = this.socketService.getIsConnected().subscribe( () => {
       this.router.navigate(['/game']);
     });
   }

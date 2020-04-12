@@ -36,7 +36,7 @@ export class SocketService {
     let observable = new Observable<boolean>( observer => {
       this.socket.on('connected', (code, turn) => {
         console.log("is connected to " + code + ", and is turn? " + turn);
-        observer.next(turn);
+        observer.next();
       });
     });
 

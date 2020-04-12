@@ -52,9 +52,11 @@ export class GameViewComponent implements OnInit {
   updateCardMode(isTurn : boolean) : void {
     alert("is turn? " + isTurn);
     if(isTurn){
+      //my-turn
       this.currMode = this.modeNames[0];
     }
     else{
+      //voting
       this.currMode = this.modeNames[1];
     }
   }
