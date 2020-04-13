@@ -29,6 +29,7 @@ export class PlayingCardComponent implements OnInit {
   ngOnInit(): void {
   }
   ngAfterViewInit(): void {
+    //this is in ngAfterViewInit because the card ElementRef must first be loaded
     this.transitionToNewMode();
   }
 
@@ -44,20 +45,23 @@ export class PlayingCardComponent implements OnInit {
     if(this.card != null){
       switch(this.currMode){
         case cardMode.voting: {
+          this.cardText.nativeElement.textContent = "";
           this.transitionCardToFace("front");
           this.cardText.nativeElement.textContent = "vote above !";
           break;
         }
         case cardMode.waiting: {
+          this.cardText.nativeElement.textContent = "";
           this.transitionCardToFace("front");
           this.cardText.nativeElement.textContent = "waiting ...";
           break;
         }
         case cardMode.myTurn: {
+          this.cardText.nativeElement.textContent = "";
           this.transitionCardToFace("back");
           
           //TODO: randomly select a card
-          this.cardText.nativeElement.textContent = "randomly selected card text here"
+          this.cardText.nativeElement.textContent = "randomly selected card text";
           break;
         }
       }
@@ -65,7 +69,7 @@ export class PlayingCardComponent implements OnInit {
     }
   }
 
-  //disable the choice button that displays when it is a player's turn to pick a card
+  //disable the choice button to select a card when it is not a player's turn
   disableCardChooseButton(){
     let choiceButtonIsDisabled : Boolean = this.choiceButton.nativeElement.classList.contains('disabled');
     if((this.currMode == cardMode.voting && !choiceButtonIsDisabled) ||
@@ -102,15 +106,13 @@ export class PlayingCardComponent implements OnInit {
   }
 
   onCardClick(card : HTMLElement) : void{
-    if(this.currMode == cardMode.myTurn)
-    {
+    if(this.currMode == cardMode.myTurn){
       card.classList.toggle('flip');
     }
   }
 
   onCardPicked() : void{
     console.log("card picked: " + this.cardText.nativeElement.textContent);
-
     this.socketService.giveUpTurn();
   }
 }
