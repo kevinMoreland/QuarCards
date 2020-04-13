@@ -1,4 +1,4 @@
-import { Component, OnInit, SimpleChanges } from '@angular/core';
+import { Component, OnInit, SimpleChanges, SystemJsNgModuleLoader } from '@angular/core';
 import { Input, ViewChild, ElementRef } from '@angular/core';
 import { CardService } from '../card.service';
 import { SocketService } from '../socket.service';
@@ -27,10 +27,9 @@ export class PlayingCardComponent implements OnInit {
               private socketService: SocketService) { }
 
   ngOnInit(): void {
-    //TODO randomly select a card
-    this.cardService.getCard(0).subscribe(card => 
-      this.testCard = card);
-
+  }
+  ngAfterViewInit(): void {
+    this.transitionToNewMode();
   }
 
   //when the mode changes (players turn to pick card or vote  ), notify the card so it can transition to the new mode
@@ -42,19 +41,15 @@ export class PlayingCardComponent implements OnInit {
 
   //modify the text and flip the cards as necessary to enter the new mode
   transitionToNewMode() : void {
-    //check null since initially on load, ngOnChanges detects a change in currMode when the card is still undefined
-    //TODO: Fix issue where initially, the cards don't transition to new mode since card is null when currMode changes
-    if(this.card != null) {
+    if(this.card != null){
       switch(this.currMode){
         case cardMode.voting: {
           this.transitionCardToFace("front");
-          
           this.cardText.nativeElement.textContent = "vote above !";
           break;
         }
         case cardMode.waiting: {
           this.transitionCardToFace("front");
-          
           this.cardText.nativeElement.textContent = "waiting ...";
           break;
         }
@@ -62,7 +57,7 @@ export class PlayingCardComponent implements OnInit {
           this.transitionCardToFace("back");
           
           //TODO: randomly select a card
-          this.cardText.nativeElement.textContent = this.testCard.card_text;
+          this.cardText.nativeElement.textContent = "randomly selected card text here"
           break;
         }
       }
