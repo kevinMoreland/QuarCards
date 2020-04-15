@@ -5,7 +5,7 @@ import { NavigationStart, Router } from '@angular/router';
 import { Output } from '@angular/core';
 
 import { browserRefresh } from '../app.component';
-enum cardMode {myTurn, voting, waiting};
+import { cardMode } from '../../entity/data-structures/card-modes';
 
 @Component({
   selector: 'app-game-view',

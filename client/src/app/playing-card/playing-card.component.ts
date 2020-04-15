@@ -3,8 +3,8 @@ import { Input, ViewChild, ElementRef } from '@angular/core';
 import { CardService } from '../card.service';
 import { SocketService } from '../socket.service';
 import Card from 'src/entity/Card';
+import { cardMode } from '../../entity/data-structures/card-modes';
 
-enum cardMode {myTurn, voting, waiting};
 
 @Component({
   selector: 'app-playing-card',
