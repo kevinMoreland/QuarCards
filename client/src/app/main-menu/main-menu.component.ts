@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { SocketService } from '../socket.service';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-main-menu',
@@ -9,6 +10,7 @@ import { Router } from '@angular/router';
 })
 export class MainMenuComponent implements OnInit {
   lobbyCode: string;
+  isConnectedSubscription: Subscription;
 
   constructor( private socketService: SocketService,
     private router: Router ) { }
@@ -18,13 +20,33 @@ export class MainMenuComponent implements OnInit {
   }
 
   onStartGame() {
+    // set up listener for connecting to lobby
+    this.onConnectGoToGame();
+
+    // send event to server
     this.socketService.joinNewRoom();
-    this.router.navigate(['/game']);
   }
 
   onJoinGame() {
+    // set up listener for connecting to lobby
+    this.onConnectGoToGame();
+
+    // send event to server
     this.socketService.joinExistingRoom(this.lobbyCode);
-    this.router.navigate(['/game']);
+  }
+
+  onConnectGoToGame(){
+    if(!this.isConnectedSubscription){
+      this.isConnectedSubscription = this.socketService.getIsConnected().subscribe( () => {
+        this.router.navigate(['/game']);
+      });
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (this.isConnectedSubscription) {
+      this.isConnectedSubscription.unsubscribe();
+    }
   }
 
 }

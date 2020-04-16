@@ -1,7 +1,10 @@
-import { Component, OnInit, SimpleChanges } from '@angular/core';
+import { Component, OnInit, SimpleChanges, SystemJsNgModuleLoader } from '@angular/core';
 import { Input, ViewChild, ElementRef } from '@angular/core';
 import { CardService } from '../card.service';
+import { SocketService } from '../socket.service';
 import Card from 'src/entity/Card';
+import { cardMode } from '../../entity/data-structures/card-modes';
+
 
 @Component({
   selector: 'app-playing-card',
@@ -12,7 +15,7 @@ import Card from 'src/entity/Card';
 export class PlayingCardComponent implements OnInit {
 
 
-  @Input() currMode : String;
+  @Input() currMode : cardMode;
   @ViewChild("cardBackText", {read: ElementRef}) cardText: ElementRef;
   @ViewChild("cardFlipper", {read: ElementRef}) card: ElementRef;
   @ViewChild("choiceButton", {read: ElementRef}) choiceButton: ElementRef;
@@ -20,50 +23,60 @@ export class PlayingCardComponent implements OnInit {
   cardFlipTime : number = 600;
   testCard : Card;
 
-  constructor(private cardService: CardService) { }
+  constructor(private cardService: CardService,
+              private socketService: SocketService) { }
 
   ngOnInit(): void {
-    //TODO randomly select a card
-    this.cardService.getCard(0).subscribe(card => 
-      this.testCard = card);
+  }
+  ngAfterViewInit(): void {
+    //this is in ngAfterViewInit because the card ElementRef must first be loaded
+    this.transitionToNewMode();
   }
 
   //when the mode changes (players turn to pick card or vote  ), notify the card so it can transition to the new mode
   ngOnChanges(changes : SimpleChanges): void{
     if(changes.currMode) {
-      if(this.card != null) {
-        this.transitionToNewMode();
-      }
+      this.transitionToNewMode();
     }
   }
 
   //modify the text and flip the cards as necessary to enter the new mode
   transitionToNewMode() : void {
-    //check null since initially on load, ngOnChanges detects a change in currMode when the card is still undefined
-    if(this.card != null) {
+    if(this.card != null){
       switch(this.currMode){
-        case "voting": {
+        case cardMode.voting: {
+          this.cardText.nativeElement.textContent = "";
           this.transitionCardToFace("front");
-          
           this.cardText.nativeElement.textContent = "vote above !";
           break;
         }
-        case "my-turn": {
+        case cardMode.waiting: {
+          this.cardText.nativeElement.textContent = "";
+          this.transitionCardToFace("front");
+          this.cardText.nativeElement.textContent = "waiting ...";
+          break;
+        }
+        case cardMode.myTurn: {
+          this.cardText.nativeElement.textContent = "";
           this.transitionCardToFace("back");
           
           //TODO: randomly select a card
-          this.cardText.nativeElement.textContent = this.testCard.card_text;
+          this.cardText.nativeElement.textContent = "randomly selected card text";
           break;
         }
       }
+      this.disableCardChooseButton();
+    }
+  }
 
-      //disable or enable the button to choose a card
-      let choiceButtonIsDisabled : Boolean = this.choiceButton.nativeElement.classList.contains('disabled');
-      if((this.currMode == "voting" && !choiceButtonIsDisabled) ||
-         (this.currMode == "my-turn" && choiceButtonIsDisabled))
-      {
-        this.choiceButton.nativeElement.classList.toggle('disabled');
-      }
+  //disable the choice button to select a card when it is not a player's turn
+  disableCardChooseButton(){
+    let choiceButtonIsDisabled : Boolean = this.choiceButton.nativeElement.classList.contains('disabled');
+    if((this.currMode == cardMode.voting && !choiceButtonIsDisabled) ||
+       (this.currMode == cardMode.myTurn && choiceButtonIsDisabled) ||
+       (this.currMode == cardMode.waiting && !choiceButtonIsDisabled))
+    {
+      this.choiceButton.nativeElement.classList.toggle('disabled');
     }
   }
 
@@ -93,13 +106,13 @@ export class PlayingCardComponent implements OnInit {
   }
 
   onCardClick(card : HTMLElement) : void{
-    if(this.currMode == "my-turn")
-    {
+    if(this.currMode == cardMode.myTurn){
       card.classList.toggle('flip');
     }
   }
 
   onCardPicked() : void{
-    alert("a card was picked!");
+    console.log("card picked: " + this.cardText.nativeElement.textContent);
+    this.socketService.giveUpTurn();
   }
 }

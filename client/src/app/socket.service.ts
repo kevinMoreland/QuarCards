@@ -8,6 +8,7 @@ import { Observable } from 'rxjs';
 export class SocketService {
   socket: any = null;
   connectedRoom: string = '';
+  isTurn: boolean = null;
 
   constructor() { }
 
@@ -15,17 +16,24 @@ export class SocketService {
     if (this.socket) {
       return;
     }
-    //var hostname = 'http://localhost:3000';
-    var hostname = 'https://strawberry-sundae-17314.herokuapp.com';
+    var hostname = 'http://localhost:3000';
+    //var hostname = 'https://strawberry-sundae-17314.herokuapp.com';
     //var hostname = 'http://localhost:5000';
 
     this.socket = io(hostname);
+  }
 
-    this.socket.on('connected', function(code) {
-      this.connectedRoom = code;
-      console.log('connected room:', this.connectedRoom);
+  getIsConnected() : Observable<boolean>{
+
+    //this.socket.emit('clientGetIsTurn', this.connectedRoom);
+    let observable = new Observable<boolean>( observer => {
+      this.socket.on('connected', (code, turn) => {
+        console.log("is connected to " + code + ", and is turn? " + turn);
+        observer.next();
+      });
     });
 
+    return observable;
   }
 
   disconnectSocket() {
@@ -34,15 +42,16 @@ export class SocketService {
     }
     this.socket = null;
     this.connectedRoom = '';
+    this.isTurn = null;
   }
 
-  joinNewRoom() {
+  joinNewRoom(): void {
     if (this.connectedRoom !== '') {
       console.log("Cannot connect to new lobby while in another lobby");
     }
     else {
       this.socket.emit('newLobby');
-    }
+    }    
   }
 
   joinExistingRoom(desiredRoom) {
@@ -55,7 +64,7 @@ export class SocketService {
   }
 
   sendChatMessage(message: string) {
-    this.socket.emit('clientSendChat', this.socket.connectedRoom, message);
+    this.socket.emit('clientSendChat', this.connectedRoom, message);
   }
 
   receiveChatMessage() {
@@ -71,4 +80,26 @@ export class SocketService {
 
     return observable;
   }
+
+  giveUpTurn(){
+    this.socket.emit('clientGivingUpTurn', this.connectedRoom);
+  }
+  getIsTurn() : Observable<boolean>{
+
+    //this.socket.emit('clientGetIsTurn', this.connectedRoom);
+    let observable = new Observable<boolean>( observer => {
+      this.socket.on('serverSendIsTurn', (msg) => {
+        this.isTurn = msg;
+        console.log("is turn? " + msg);
+        observer.next(msg);
+      });
+      return () => {
+        this.disconnectSocket();
+      };
+    });
+
+    return observable;
+  }
+
+
 }
