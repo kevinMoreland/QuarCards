@@ -20,15 +20,19 @@ export class MainMenuComponent implements OnInit {
   }
 
   onStartGame() {
-    this.socketService.joinNewRoom();
-    //this.router.navigate(['/game']);
+    // set up listener for connecting to lobby
     this.onConnectGoToGame();
+
+    // send event to server
+    this.socketService.joinNewRoom();
   }
 
   onJoinGame() {
-    this.socketService.joinExistingRoom(this.lobbyCode);
-    //this.router.navigate(['/game']);
+    // set up listener for connecting to lobby
     this.onConnectGoToGame();
+
+    // send event to server
+    this.socketService.joinExistingRoom(this.lobbyCode);
   }
 
   onConnectGoToGame(){

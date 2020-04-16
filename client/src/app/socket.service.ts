@@ -21,13 +21,6 @@ export class SocketService {
     //var hostname = 'http://localhost:5000';
 
     this.socket = io(hostname);
-
-    this.socket.on('connected', (code, turn) => {
-      this.connectedRoom = code;
-      this.isTurn = turn;
-      console.log("connected room: " + this.connectedRoom + ", is turn: " + this.isTurn);
-    });
-
   }
 
   getIsConnected() : Observable<boolean>{
@@ -49,6 +42,7 @@ export class SocketService {
     }
     this.socket = null;
     this.connectedRoom = '';
+    this.isTurn = null;
   }
 
   joinNewRoom(): void {
