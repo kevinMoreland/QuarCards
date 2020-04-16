@@ -22,12 +22,6 @@ export class SocketService {
 
     this.socket = io(hostname);
 
-    this.socket.on('connected', (code, turn) => {
-      this.connectedRoom = code;
-      this.isTurn = turn;
-      console.log("connected room: " + this.connectedRoom + ", is turn: " + this.isTurn);
-    });
-
   }
 
   getIsConnected() : Observable<boolean>{
@@ -35,6 +29,8 @@ export class SocketService {
     //this.socket.emit('clientGetIsTurn', this.connectedRoom);
     let observable = new Observable<boolean>( observer => {
       this.socket.on('connected', (code, turn) => {
+        this.connectedRoom = code;
+        this.isTurn = turn;
         console.log("is connected to " + code + ", and is turn? " + turn);
         observer.next();
       });
