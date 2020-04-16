@@ -21,7 +21,6 @@ export class SocketService {
     //var hostname = 'http://localhost:5000';
 
     this.socket = io(hostname);
-
   }
 
   getIsConnected() : Observable<boolean>{
@@ -45,6 +44,7 @@ export class SocketService {
     }
     this.socket = null;
     this.connectedRoom = '';
+    this.isTurn = null;
   }
 
   joinNewRoom(): void {
