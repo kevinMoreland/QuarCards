@@ -28,6 +28,8 @@ export class SocketService {
     //this.socket.emit('clientGetIsTurn', this.connectedRoom);
     let observable = new Observable<boolean>( observer => {
       this.socket.on('connected', (code, turn) => {
+        this.connectedRoom = code;
+        this.isTurn = turn;
         console.log("is connected to " + code + ", and is turn? " + turn);
         observer.next();
       });
