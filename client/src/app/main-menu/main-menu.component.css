@@ -1,17 +1,93 @@
+/* .container {
+    background-clip: border-box;
+    background-color: #262626;
+} */
+
 :host {
     display: block;
     font-family: Helvetica;
     text-align: center;
+    background-color: #262626;
+    /* height: 100vh; */
 }
-h1{
+
+h1 {
     font-size: 5rem;
     padding-top: 10rem;
     padding-bottom: 4rem;
+    /* font-family: 'Source Code Pro', monospace; */
+    color: white;
 }
+
+h2 {
+    color: white;
+}
+
+.separator {
+    margin-top: 2%;
+    margin-bottom: 2%;
+}
+
 #startGameButton{
-    width: 30%;
+    width: 40vw;
 }
+
+.joinForm {
+    width: 40vw;
+    text-align: center;
+}
+
 .gameCodeForm{
-    width: 30%;
+    width: 40%;
     margin: auto;
+    margin-top: 4%;
+}
+
+#codeInput {
+    margin-bottom: 1%;
+}
+
+.buttonPadding {
+    padding-top: 1.2%;
+    padding-bottom: 1.2%;
+}
+
+@media (max-width: 760px) {
+    h1 {
+        font-size: 4rem;
+        padding-bottom: 2rem;
+        padding-top: 8rem;
+    }
+
+    #startGameButton {
+        width: 70vw;
+    }
+
+    .joinForm {
+        width: 70vw;
+    }
+
+    .separator {
+        margin-top: 8%;
+        margin-bottom: 8%;
+    }
+
+    .buttonPadding {
+        padding-top: 3%;
+        padding-bottom: 3%;
+    }
+}
+
+@media (max-width: 500px) {
+    h1 {
+        font-size: 3rem;
+    }
+}
+
+/* iPhone 5/SE */
+@media (max-width: 320px) {
+    h1 {
+        font-size: 2rem;
+        padding-top: 6rem;
+    }
 }

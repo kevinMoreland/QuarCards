@@ -1,11 +1,31 @@
 <div class = "container">
-  <h1>Quarantine Cards</h1>
-  <button type="button" class="btn btn-primary" id="startGameButton" (click)="onStartGame()">start a game</button>
-  <h2>or</h2>
-  <div class="input-group mb-3 gameCodeForm">
-    <div class="input-group-prepend">
-      <button type="button" class="btn btn-secondary" id="joinGameButton" (click)="onJoinGame()">join a game</button>
+  <div class="row">
+    <div class="col">
+      <h1>Quarantine Cards.</h1>
     </div>
-    <input type="text" class="form-control" [(ngModel)]="lobbyCode" placeholder="enter code here..." aria-label="Username" aria-describedby="basic-addon1">
+  </div>
+  <div class="row">
+    <div class="col">
+      <button type="button" class="btn-lg btn-primary buttonPadding" id="startGameButton" (click)="onStartGame()">Start a new game!</button>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <h2 class="separator">OR</h2>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <!-- <div class="input-group mb-3 gameCodeForm"> -->
+        <!-- <div class="input-group-prepend"> -->
+          <input type="text" class="form-control-lg joinForm" id="codeInput" [(ngModel)]="lobbyCode" placeholder="Room code" aria-label="Username" aria-describedby="basic-addon1">
+        <!-- </div> -->
+      <!-- </div> -->
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <button type="button" class="btn-lg btn-info joinForm buttonPadding" id="joinButton" (click)="onJoinGame()">Join your friend's game!</button>
+    </div>
   </div>
 </div>
