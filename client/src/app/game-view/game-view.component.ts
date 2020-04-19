@@ -45,8 +45,7 @@ export class GameViewComponent implements OnInit {
 
     //initially, get card mode and list of players
     this.updateCardMode(this.socketService.isTurn);
-    this.playerList = this.socketService.activePlayerList;
-    alert("player list: " + this.playerList);
+    this.playerList = this.socketService.allOtherPlayers;
 
     this.isTurnSubscription = this.socketService.getIsTurn().subscribe( (msg) => {
       this.socketService.isTurn = msg;
@@ -54,9 +53,8 @@ export class GameViewComponent implements OnInit {
     });
 
     this.playerListSubscription = this.socketService.getPlayerList().subscribe( (msg) => {
+      this.socketService.allOtherPlayers = msg;
       this.playerList = msg;
-
-      alert("player list: " + msg);
     });
   }
 

@@ -9,9 +9,20 @@ export class SocketService {
   socket: any = null;
   connectedRoom: string = '';
   isTurn: boolean = null;
-  activePlayerList: Array<string> = [];
+  allOtherPlayers: Array<string> = [];
 
   constructor() { }
+
+  //get list of all players excluding this current one
+  getAllOtherPlayersList(allPlayers: Array<string>): Array<string>{
+    var output: Array<string> = [];
+    allPlayers.forEach((player) =>{
+      if(player != this.socket.id.toString()){
+        output.push(player);
+      }
+    })
+    return output;
+  }
 
   setUpSocket() {
     if (this.socket) {
@@ -31,7 +42,7 @@ export class SocketService {
       this.socket.on('connected', (code, turn, playerList) => {
         this.connectedRoom = code;
         this.isTurn = turn;
-        this.activePlayerList = playerList;
+        this.allOtherPlayers = this.getAllOtherPlayersList(playerList);
         console.log("is connected to " + code + ", and is turn? " + turn + ", " + playerList);
         observer.next();
       });
@@ -89,8 +100,6 @@ export class SocketService {
     this.socket.emit('clientGivingUpTurn', this.connectedRoom);
   }
   getIsTurn() : Observable<boolean>{
-
-    //this.socket.emit('clientGetIsTurn', this.connectedRoom);
     let observable = new Observable<boolean>( observer => {
       this.socket.on('serverSendIsTurn', (msg) => {
         this.isTurn = msg;
@@ -105,12 +114,11 @@ export class SocketService {
     return observable;
   }
 
-  getPlayerList() : Observable<Array<String>>{
-
-    //this.socket.emit('clientGetIsTurn', this.connectedRoom);
-    let observable = new Observable<Array<String>>( observer => {
+  getPlayerList() : Observable<Array<string>>{
+    let observable = new Observable<Array<string>>( observer => {
       this.socket.on('serverUpdatePlayerList', (msg) => {
-        observer.next(msg);
+        var output: Array<string> = this.getAllOtherPlayersList(msg);
+        observer.next(output);
       });
       return () => {
         this.disconnectSocket();
