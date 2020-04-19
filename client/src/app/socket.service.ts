@@ -47,21 +47,21 @@ export class SocketService {
     this.isTurn = null;
   }
 
-  joinNewRoom(): void {
+  joinNewRoom(name: String): void {
     if (this.connectedRoom !== '') {
       console.log("Cannot connect to new lobby while in another lobby");
     }
     else {
-      this.socket.emit('newLobby');
+      this.socket.emit('newLobby', name);
     }    
   }
 
-  joinExistingRoom(desiredRoom) {
+  joinExistingRoom(desiredRoom: String, name: String) {
     if (this.connectedRoom !== '') {
       console.log("Cannot connect to new lobby while in another lobby");
     }
     else {
-      this.socket.emit('joinLobby', desiredRoom);
+      this.socket.emit('joinLobby', desiredRoom, name);
     }
   }
 
