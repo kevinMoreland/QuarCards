@@ -23,6 +23,6 @@ router.get('/cardByNum/:num', async (req, res, next)=>{
     catch(error) {
         res.send({error: error.message})
     }
-})
+});
 
 module.exports = router;

@@ -1,7 +1,19 @@
 /* You can add global styles to this file, and also import other style files */
 
-@import url('https://fonts.googleapis.com/css?family=Fira+Sans&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Fira+Sans&family=Fjalla+One&family=Source+Code+Pro:wght@600&family=Special+Elite&display=swap');
 
 * {
-    font-family: 'Fira Sans', sans-serif;
+    /* font-family: 'Fira Sans', sans-serif; */
+    /* font-family: 'Source Code Pro', monospace; */
+    /* font-family: 'Fjalla One', sans-serif; */
+    /* font-family: 'Bebas Neue', cursive; */
+    font-family: 'Special Elite', cursive;
+}
+
+html, body {
+    background-color: #262626;
+}
+
+app-root {
+    background-color: #262626;
 }

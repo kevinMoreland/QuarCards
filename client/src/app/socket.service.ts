@@ -9,16 +9,16 @@ export class SocketService {
   socket: any = null;
   connectedRoom: string = '';
   isTurnOnStart: boolean = null;
-  allOtherPlayersOnStart: Array<string> = [];
+  allOtherPlayersOnStart: Array<any> = [];
 
   constructor() { }
 
   //get list of all players excluding this current one
-  getAllOtherPlayersList(allPlayers: Array<string>): Array<string>{
+  getAllOtherPlayersList(allPlayers: Array<any>): Array<any>{
     console.log("all players: " + allPlayers);
-    var output: Array<string> = [];
+    var output: Array<any> = [];
     allPlayers.forEach((player) =>{
-      if(player != this.socket.id.toString()){
+      if(player.Id != this.socket.id){
         output.push(player);
       }
     });
@@ -63,21 +63,21 @@ export class SocketService {
     this.allOtherPlayersOnStart = null;
   }
 
-  joinNewRoom(): void {
+  joinNewRoom(name: String): void {
     if (this.connectedRoom !== '') {
       console.log("Cannot connect to new lobby while in another lobby");
     }
     else {
-      this.socket.emit('newLobby');
+      this.socket.emit('newLobby', name);
     }    
   }
 
-  joinExistingRoom(desiredRoom) {
+  joinExistingRoom(desiredRoom: String, name: String) {
     if (this.connectedRoom !== '') {
       console.log("Cannot connect to new lobby while in another lobby");
     }
     else {
-      this.socket.emit('joinLobby', desiredRoom);
+      this.socket.emit('joinLobby', desiredRoom, name);
     }
   }
 
@@ -116,10 +116,10 @@ export class SocketService {
   }
 
   //get the list of all players excluding current player
-  getOtherPlayerList() : Observable<Array<string>>{
-    let observable = new Observable<Array<string>>( observer => {
+  getOtherPlayerList() : Observable<Array<any>>{
+    let observable = new Observable<Array<any>>( observer => {
       this.socket.on('serverUpdatePlayerList', (msg) => {
-        var output: Array<string> = this.getAllOtherPlayersList(msg);
+        var output: Array<any> = this.getAllOtherPlayersList(msg);
         observer.next(output);
       });
       return () => {

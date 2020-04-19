@@ -1,11 +1,42 @@
 <div class = "container">
-  <h1>Quarantine Cards</h1>
-  <button type="button" class="btn btn-primary" id="startGameButton" (click)="onStartGame()">start a game</button>
-  <h2>or</h2>
-  <div class="input-group mb-3 gameCodeForm">
-    <div class="input-group-prepend">
-      <button type="button" class="btn btn-secondary" id="joinGameButton" (click)="onJoinGame()">join a game</button>
+  <div class="row">
+    <div class="col">
+      <h1>Quarantine Cards.</h1>
     </div>
-    <input type="text" class="form-control" [(ngModel)]="lobbyCode" placeholder="enter code here..." aria-label="Username" aria-describedby="basic-addon1">
+  </div>
+  <div class="row" *ngIf="!this.showNameField">
+    <div class="col">
+      <button type="button" class="btn btn-lg btn-primary buttonPadding" id="startGameButton" (click)="onStartGame()">Start a new game!</button>
+    </div>
+  </div>
+  <div class="row" *ngIf="!this.showNameField">
+    <div class="col">
+      <h2 class="separator">OR</h2>
+    </div>
+  </div>
+  <!-- ROOM CODE FIELD -->
+  <p id="noRoom" *ngIf="invalidRoom">Room not found!</p>
+  <div class="row" *ngIf="!this.showNameField">
+    <div class="col">
+          <input type="text" class="form-control-lg joinForm" id="codeInput" [(ngModel)]="lobbyCode" placeholder="Room code" aria-label="Username" aria-describedby="basic-addon1">
+    </div>
+  </div>
+  <div class="row" *ngIf="!this.showNameField">
+    <div class="col">
+      <button type="button" class="btn btn-lg btn-info joinForm buttonPadding" id="joinButton" (click)="onJoinGame()">Join your friend's game!</button>
+    </div>
+  </div>
+
+  <!-- NAME FIELD -->
+  <div class="row" *ngIf="this.showNameField">
+    <div class="col">
+    <h3>What is your name?</h3>
+      <input type="text" class="form-control-lg joinForm" id="codeInput" [(ngModel)]="name" aria-label="Username" aria-describedby="basic-addon1">
+    </div>
+  </div>
+  <div class="row" *ngIf="this.showNameField">
+    <div class="col">
+      <button type="button" class="btn btn-lg btn-success joinForm buttonPadding" id="joinButton" (click)="onEnterName()">Enter game</button>
+    </div>
   </div>
 </div>

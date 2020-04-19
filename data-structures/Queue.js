@@ -3,6 +3,10 @@ function Queue(){
     this.remove=function(val){
         var index = a.findIndex(function(arrVal){return arrVal == val});
         a.splice(index, 1)};
+    //accepts socket Id of a player to remove
+    this.removePlayer=function(playerId){
+        var index = a.findIndex(function(arrVal){return arrVal.Id == playerId});
+        a.splice(index, 1)};
     this.asArray=function(){return a;};
     this.getLength=function(){return a.length};
     this.isEmpty=function(){return 0==a.length};
