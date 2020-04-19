@@ -10,6 +10,8 @@ const bodyparser = require('body-parser');
 //data structures needed
 const Queue = require('./data-structures/Queue');
 const SessionData = require('./data-structures/SessionData');
+const Player = require('./data-structures/Player');
+
 
 //socket stuff
 var io = require('socket.io')(http);
@@ -70,16 +72,36 @@ app.use(bodyparser.json());
 //routes
 app.use('/api', route);
 
+app.post('/checkRoom', async (req, res) => {
+    console.log('**checking room**');
+    roomCode = req.body.code;
+    if (!roomCode) {
+        res.sendStatus(401);
+        return;
+    }
+    else {
+        roomCode = roomCode.toUpperCase();
+    }
+    if (sessions[roomCode]) {
+        console.log("found!");
+        res.sendStatus(200);
+    }
+    else {
+        res.sendStatus(401);
+    }
+});
+
 io.on('connection', function(socket) {
     console.log(`user ${socket.id} has connected`);
     //console.log(socket.roomCode);
-    socket.on('newLobby', function() {
+    socket.on('newLobby', function(username) {
         var roomCode = generateCode();
+        var newPlayer = new Player(socket.id, username);
 
         //collect all information to create the new session
         var sessionData = new SessionData();
         sessionData.playerQueue = new Queue();
-        sessionData.playerQueue.enqueue([socket.id]);
+        sessionData.playerQueue.enqueue(newPlayer);
 
         //start up the new session
         sessions[roomCode] = sessionData;
@@ -89,22 +111,27 @@ io.on('connection', function(socket) {
         console.log(socket.roomCode);
         console.log("position number: " + sessions[roomCode].playerQueue.getLength());
         console.log("using code " + roomCode);
-        var isTurn = sessions[roomCode].playerQueue.peek() == socket.id;
+        console.log('queue');
+        console.log(sessionData.playerQueue.asArray());
+        var isTurn = sessions[roomCode].playerQueue.peek().Id == socket.id;
         io.to(socket.id).emit('connected', roomCode, isTurn);
     });
 
-    socket.on('joinLobby', function(code) {
+    socket.on('joinLobby', function(code, username) {
         code = code.toUpperCase();
         console.log(code);
+        var newPlayer = new Player(socket.id, username);
         if (sessions[code]) {
-            sessions[code].playerQueue.enqueue(socket.id);
+            sessions[code].playerQueue.enqueue(newPlayer);
             socket.roomCode = code;
             socket.join(code);
 
             console.log("position number: " + sessions[code].playerQueue.getLength());
             console.log("using code: " + code);
 
-            var isTurn = sessions[code].playerQueue.peek() == socket.id;
+            var isTurn = sessions[code].playerQueue.peek().Id == socket.id;
+            console.log('queue');
+            console.log(sessions[code].playerQueue.asArray());
             io.to(socket.id).emit('connected', code, isTurn);
         }
         else {
@@ -125,7 +152,7 @@ io.on('connection', function(socket) {
             return;
         }
 
-        var isTurn = sessions[socket.roomCode].playerQueue.peek() == socket.id;
+        var isTurn = sessions[socket.roomCode].playerQueue.peek().Id == socket.id;
 
         //remove this player's socket id from the session
         sessions[socket.roomCode].playerQueue.remove(socket.id);
@@ -134,25 +161,24 @@ io.on('connection', function(socket) {
         //if it was this player's turn when disconnected, ensure turn is transferred to next player if room isn't empty
         if(isTurn && !roomIsEmpty)
         {
-            io.to(sessions[socket.roomCode].playerQueue.peek()).emit('serverSendIsTurn', true);
+            io.to(sessions[socket.roomCode].playerQueue.peek().Id).emit('serverSendIsTurn', true);
         }
 
         //delete room if there are no more players
         if (roomIsEmpty) {
             delete sessions[socket.roomCode];
         }
-
-        console.log(sessions);
     });
 
     socket.on('clientGivingUpTurn', function(code) {
-        if(sessions[code].playerQueue.peek() == socket.id)
+        if(sessions[code].playerQueue.peek().Id == socket.id)
         {
             var prevQueueHead = sessions[code].playerQueue.dequeue();
             sessions[code].playerQueue.enqueue(prevQueueHead);
-            console.log("Gave up turn, new queue looks like " + sessions[code].playerQueue.asArray());
+            console.log("Gave up turn, new queue looks like:");
+            console.log(sessions[code].playerQueue.asArray());
             io.to(socket.id).emit('serverSendIsTurn', false);
-            io.to(sessions[code].playerQueue.peek()).emit('serverSendIsTurn', true);
+            io.to(sessions[code].playerQueue.peek().Id).emit('serverSendIsTurn', true);
         }
         else
         {
@@ -171,3 +197,5 @@ http.listen(port, ()=>{
     console.log('Server started at port ' + port);
 
 })
+
+exports.sessions = sessions;

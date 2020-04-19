@@ -1,5 +1,10 @@
+html, body {
+    background-color: white;
+}
+
 :host {
     font-family: Helvetica;
+    background-color: white;
 }
 .card{
     padding: 10px;

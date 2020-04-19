@@ -23,6 +23,14 @@ h2 {
     color: white;
 }
 
+h3 {
+    color: white;
+}
+
+#noRoom {
+    color: red;
+}
+
 .separator {
     margin-top: 2%;
     margin-bottom: 2%;
@@ -59,6 +67,10 @@ h2 {
         padding-top: 8rem;
     }
 
+    h2 {
+        font-size: 1.7rem;
+    }
+
     #startGameButton {
         width: 70vw;
     }
@@ -73,21 +85,22 @@ h2 {
     }
 
     .buttonPadding {
-        padding-top: 3%;
-        padding-bottom: 3%;
+        padding-top: 2.5%;
+        padding-bottom: 2.5%;
     }
 }
 
 @media (max-width: 500px) {
     h1 {
-        font-size: 3rem;
+        font-size: 3.5rem;
+        padding-top: 7rem;
     }
 }
 
 /* iPhone 5/SE */
 @media (max-width: 320px) {
     h1 {
-        font-size: 2rem;
+        font-size: 2.5rem;
         padding-top: 6rem;
     }
 }

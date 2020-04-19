@@ -28,15 +28,17 @@ export class GameViewComponent implements OnInit {
 
   ngOnInit(): void {
     console.log("init game view");
+
     this.browserRefresh = browserRefresh;
     if (this.browserRefresh) {
       this.router.navigate(['/']);
       return;
     }
-    
+
     this.routingSubscription = this.router.events.subscribe( event => {
       if (event instanceof NavigationStart ) {
         this.socketService.disconnectSocket();
+        console.log('here');
       }
     });
 
