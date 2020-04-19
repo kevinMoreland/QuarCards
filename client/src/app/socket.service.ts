@@ -9,6 +9,7 @@ export class SocketService {
   socket: any = null;
   connectedRoom: string = '';
   isTurn: boolean = null;
+  activePlayerList: Array<string> = [];
 
   constructor() { }
 
@@ -27,10 +28,11 @@ export class SocketService {
 
     //this.socket.emit('clientGetIsTurn', this.connectedRoom);
     let observable = new Observable<boolean>( observer => {
-      this.socket.on('connected', (code, turn) => {
+      this.socket.on('connected', (code, turn, playerList) => {
         this.connectedRoom = code;
         this.isTurn = turn;
-        console.log("is connected to " + code + ", and is turn? " + turn);
+        this.activePlayerList = playerList;
+        console.log("is connected to " + code + ", and is turn? " + turn + ", " + playerList);
         observer.next();
       });
     });
@@ -103,5 +105,19 @@ export class SocketService {
     return observable;
   }
 
+  getPlayerList() : Observable<Array<String>>{
+
+    //this.socket.emit('clientGetIsTurn', this.connectedRoom);
+    let observable = new Observable<Array<String>>( observer => {
+      this.socket.on('serverUpdatePlayerList', (msg) => {
+        observer.next(msg);
+      });
+      return () => {
+        this.disconnectSocket();
+      };
+    });
+
+    return observable;
+  }
 
 }
