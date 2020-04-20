@@ -9,7 +9,8 @@ import Card from 'src/entity/Card';
 })
 
 export class CardService {
-  hostName: String = 'http://localhost:3000';
+  //hostName: String = 'http://localhost:3000';
+  hostName = 'https://strawberry-sundae-17314.herokuapp.com';
   constructor(private http: HttpClient) { }
 
   getCards(): Observable<Card[]> {
