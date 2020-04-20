@@ -113,8 +113,12 @@ io.on('connection', function(socket) {
         console.log("using code " + roomCode);
         console.log('queue');
         console.log(sessionData.playerQueue.asArray());
+
         var isTurn = sessions[roomCode].playerQueue.peek().Id == socket.id;
-        io.to(socket.id).emit('connected', roomCode, isTurn);
+        var playerList = sessions[roomCode].playerQueue.asArray();
+
+        io.to(socket.id).emit('connected', roomCode, isTurn, playerList);
+
     });
 
     socket.on('joinLobby', function(code, username) {
@@ -129,10 +133,15 @@ io.on('connection', function(socket) {
             console.log("position number: " + sessions[code].playerQueue.getLength());
             console.log("using code: " + code);
 
+
             var isTurn = sessions[code].playerQueue.peek().Id == socket.id;
+            var playerList = sessions[code].playerQueue.asArray();
+
             console.log('queue');
             console.log(sessions[code].playerQueue.asArray());
-            io.to(socket.id).emit('connected', code, isTurn);
+            
+            io.to(code).emit('serverUpdatePlayerList', playerList);
+            io.to(socket.id).emit('connected', code, isTurn, playerList);
         }
         else {
             console.log("Room not found: " + code);
@@ -154,18 +163,21 @@ io.on('connection', function(socket) {
 
         var isTurn = sessions[socket.roomCode].playerQueue.peek().Id == socket.id;
 
-        //remove this player's socket id from the session
-        sessions[socket.roomCode].playerQueue.remove(socket.id);
+        //remove this player from the session
+        sessions[socket.roomCode].playerQueue.removePlayer(socket.id);
+        
         var roomIsEmpty = (sessions[socket.roomCode].playerQueue.getLength() == 0);
+        if(!roomIsEmpty){
+            //update list of players
+            io.to(socket.roomCode).emit('serverUpdatePlayerList', sessions[socket.roomCode].playerQueue.asArray());
 
-        //if it was this player's turn when disconnected, ensure turn is transferred to next player if room isn't empty
-        if(isTurn && !roomIsEmpty)
-        {
-            io.to(sessions[socket.roomCode].playerQueue.peek().Id).emit('serverSendIsTurn', true);
+            if(isTurn)
+            {
+                io.to(sessions[socket.roomCode].playerQueue.peek().Id).emit('serverSendIsTurn', true);
+            }   
         }
-
-        //delete room if there are no more players
-        if (roomIsEmpty) {
+        else{
+            //delete room
             delete sessions[socket.roomCode];
         }
     });

@@ -8,9 +8,23 @@ import { Observable } from 'rxjs';
 export class SocketService {
   socket: any = null;
   connectedRoom: string = '';
-  isTurn: boolean = null;
+  isTurnOnStart: boolean = null;
+  allOtherPlayersOnStart: Array<any> = [];
 
   constructor() { }
+
+  //get list of all players excluding this current one
+  getAllOtherPlayersList(allPlayers: Array<any>): Array<any>{
+    console.log("all players: " + allPlayers);
+    var output: Array<any> = [];
+    allPlayers.forEach((player) =>{
+      if(player.Id != this.socket.id){
+        output.push(player);
+      }
+    });
+    console.log("all other players: " + output);
+    return output;
+  }
 
   setUpSocket() {
     if (this.socket) {
@@ -27,10 +41,11 @@ export class SocketService {
 
     //this.socket.emit('clientGetIsTurn', this.connectedRoom);
     let observable = new Observable<boolean>( observer => {
-      this.socket.on('connected', (code, turn) => {
+      this.socket.on('connected', (code, turn, playerList) => {
         this.connectedRoom = code;
-        this.isTurn = turn;
-        console.log("is connected to " + code + ", and is turn? " + turn);
+        this.isTurnOnStart = turn;
+        this.allOtherPlayersOnStart = this.getAllOtherPlayersList(playerList);
+        console.log("is connected to " + code + ", and is turn? " + turn + ", " + playerList);
         observer.next();
       });
     });
@@ -44,7 +59,8 @@ export class SocketService {
     }
     this.socket = null;
     this.connectedRoom = '';
-    this.isTurn = null;
+    this.isTurnOnStart = null;
+    this.allOtherPlayersOnStart = null;
   }
 
   joinNewRoom(name: String): void {
@@ -87,12 +103,8 @@ export class SocketService {
     this.socket.emit('clientGivingUpTurn', this.connectedRoom);
   }
   getIsTurn() : Observable<boolean>{
-
-    //this.socket.emit('clientGetIsTurn', this.connectedRoom);
     let observable = new Observable<boolean>( observer => {
       this.socket.on('serverSendIsTurn', (msg) => {
-        this.isTurn = msg;
-        console.log("is turn? " + msg);
         observer.next(msg);
       });
       return () => {
@@ -103,5 +115,19 @@ export class SocketService {
     return observable;
   }
 
+  //get the list of all players excluding current player
+  getOtherPlayerList() : Observable<Array<any>>{
+    let observable = new Observable<Array<any>>( observer => {
+      this.socket.on('serverUpdatePlayerList', (msg) => {
+        var output: Array<any> = this.getAllOtherPlayersList(msg);
+        observer.next(output);
+      });
+      return () => {
+        this.disconnectSocket();
+      };
+    });
+
+    return observable;
+  }
 
 }

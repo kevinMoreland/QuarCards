@@ -20,6 +20,9 @@ export class GameViewComponent implements OnInit {
 
   routingSubscription: Subscription;
   isTurnSubscription: Subscription;
+  playerListSubscription: Subscription;
+
+  playerList: Array<any>;
 
   constructor( private socketService: SocketService,
     private router: Router) {
@@ -42,14 +45,19 @@ export class GameViewComponent implements OnInit {
       }
     });
 
-    //have this here for now to check that on initialization, we know the turn of this player
-    this.updateCardMode(this.socketService.isTurn);
+    //initially, get card mode and list of players other than current player
+    this.updateCardMode(this.socketService.isTurnOnStart);
+    this.playerList = this.socketService.allOtherPlayersOnStart;
 
     this.isTurnSubscription = this.socketService.getIsTurn().subscribe( (msg) => {
-      this.socketService.isTurn = msg;
       this.updateCardMode(msg);
     });
+
+    this.playerListSubscription = this.socketService.getOtherPlayerList().subscribe( (msg) => {
+      this.playerList = msg;
+    });
   }
+
   
   updateCardMode(isTurn : boolean) : void {
     if(isTurn){
@@ -66,6 +74,9 @@ export class GameViewComponent implements OnInit {
     }
     if(this.isTurnSubscription) {
       this.isTurnSubscription.unsubscribe();
+    }
+    if(this.playerListSubscription) {
+      this.playerListSubscription.unsubscribe();
     }
   }
 
