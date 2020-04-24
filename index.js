@@ -21,6 +21,8 @@ const buildDirectory = '/client/dist/client';
 
 var sessions = {};
 
+var numVotingPlayers = 0;
+var voteResults = [];
 
 const route = require('./routes/route.js');
 
@@ -187,6 +189,12 @@ io.on('connection', function(socket) {
         {
             var prevQueueHead = sessions[code].playerQueue.dequeue();
             sessions[code].playerQueue.enqueue(prevQueueHead);
+
+            //clear old voting results
+            voteResults = [];
+            //set number of voting players to all players minus player picking card
+            numVotingPlayers = sessions.length - 1;
+
             console.log("Gave up turn, new queue looks like:");
             console.log(sessions[code].playerQueue.asArray());
             io.to(socket.id).emit('serverSendIsTurn', false);
@@ -195,6 +203,19 @@ io.on('connection', function(socket) {
         else
         {
             console.log("It is not my turn, can't give up turn...");
+        }
+    });
+
+    //send the picked card to everyone in the room
+    socket.on('clientPickedCard', function(code, card) {
+        io.to(code).emit('serverSendCardPicked', card);
+    });
+
+    //recieve votes
+    socket.on('clientSendVote', function(playerId) {
+        voteResults.push(playerId);
+        if(numVotingPlayers >= voteResults.length){
+            io.to(code).emit('serverSendVoteResults', voteResults);
         }
     });
 });

@@ -30,8 +30,8 @@ export class SocketService {
     if (this.socket) {
       return;
     }
-    //var hostname = 'http://localhost:3000';
-    var hostname = 'https://strawberry-sundae-17314.herokuapp.com';
+    var hostname = 'http://localhost:3000';
+    //var hostname = 'https://strawberry-sundae-17314.herokuapp.com';
     //var hostname = 'http://localhost:5000';
 
     this.socket = io(hostname);
@@ -104,8 +104,8 @@ export class SocketService {
   }
   getIsTurn() : Observable<boolean>{
     let observable = new Observable<boolean>( observer => {
-      this.socket.on('serverSendIsTurn', (msg) => {
-        observer.next(msg);
+      this.socket.on('serverSendIsTurn', (isTurn) => {
+        observer.next(isTurn);
       });
       return () => {
         this.disconnectSocket();
@@ -113,6 +113,43 @@ export class SocketService {
     });
 
     return observable;
+  }
+
+  //signal to the server that a card was picked
+  pickCard(cardText : string) : void {
+    this.socket.emit('clientPickedCard', this.connectedRoom, cardText);
+  }
+
+  //wait for the card picked by player with the turn
+  getPickedCard() : Observable<string>{
+    let observable = new Observable<string>( observer => {
+      this.socket.on('serverSendCardPicked', (cardText) => {
+        observer.next(cardText);
+      });
+      return () => {
+        this.disconnectSocket();
+      };
+    });
+
+    return observable;
+  }
+
+  //wait for the voting results for the round
+  getVoteResults() : Observable<Array<any>>{
+    let observable = new Observable<Array<any>>( observer => {
+      this.socket.on('serverSendVoteResults', (results) => {
+        observer.next(results);
+      });
+      return () => {
+        this.disconnectSocket();
+      };
+    });
+
+    return observable;
+  }
+
+  submiteVote(playerId : string) : void{
+    this.socket.emit('clientSendVote', playerId);
   }
 
   //get the list of all players excluding current player
