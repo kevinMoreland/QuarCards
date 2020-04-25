@@ -113,6 +113,6 @@ export class PlayingCardComponent implements OnInit {
 
   onCardPicked() : void{
     console.log("card picked: " + this.cardText.nativeElement.textContent);
-    this.socketService.giveUpTurn();
+    this.socketService.pickCard(this.cardText.nativeElement.textContent);
   }
 }

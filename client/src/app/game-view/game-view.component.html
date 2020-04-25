@@ -4,7 +4,7 @@
         <div id = "players">
             <div class = "card">
                 <div class = "row">
-                    <div *ngFor="let player of playerList;" class="col-4"><app-player-block [name]="player.name"></app-player-block></div>
+                    <div *ngFor="let player of playerList;" class="col-4"><app-player-block [name]="player.name" [currMode] = "currMode"></app-player-block></div>
                 </div>
             </div>
         </div>

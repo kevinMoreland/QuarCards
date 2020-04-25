@@ -148,8 +148,8 @@ export class SocketService {
     return observable;
   }
 
-  submiteVote(playerId : string) : void{
-    this.socket.emit('clientSendVote', playerId);
+  submitVote(playerId : string) : void{
+    this.socket.emit('clientSendVote', this.connectedRoom, playerId);
   }
 
   //get the list of all players excluding current player

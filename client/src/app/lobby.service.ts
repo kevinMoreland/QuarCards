@@ -6,8 +6,8 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class LobbyService {
-  //hostname: string = 'http://localhost:3000';
-  hostname = 'https://strawberry-sundae-17314.herokuapp.com';
+  hostname: string = 'http://localhost:3000';
+  //hostname = 'https://strawberry-sundae-17314.herokuapp.com';
   constructor(private http : HttpClient) { }
 
   checkRoom(lobbyCode: string) : Observable<any> {

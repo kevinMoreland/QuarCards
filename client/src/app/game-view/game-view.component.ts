@@ -15,12 +15,13 @@ import { cardMode } from '../../entity/data-structures/card-modes';
 export class GameViewComponent implements OnInit {
   browserRefresh: boolean;
   @Output() currMode : cardMode;
-
-  cardMode: cardMode = cardMode.myTurn;
+  isTurn : boolean;
 
   routingSubscription: Subscription;
   isTurnSubscription: Subscription;
   playerListSubscription: Subscription;
+  cardPickedSubscription: Subscription;
+  voteResultsSubscription: Subscription;
 
   playerList: Array<any>;
 
@@ -38,38 +39,89 @@ export class GameViewComponent implements OnInit {
       return;
     }
 
+    this.initRoutingSubscription();
+    
+    //initialize turn boolean
+    this.isTurn = this.socketService.isTurnOnStart;
+    
+    this.initCardMode();
+    
+    //initialize list of players
+    this.playerList = this.socketService.allOtherPlayersOnStart;
+
+    this.initTurnSubscription();
+    this.initPlayerListSubscription();
+    this.initVoteResultsSubscription();
+  }
+
+  ngAfterViewInit(): void {
+    this.initCardPickedSubscription();
+  }
+  
+  initVoteResultsSubscription() : void {
+    this.voteResultsSubscription = this.socketService.getVoteResults().subscribe((resultsArray) => {
+      if(this.isTurn) {
+        alert("results, card picker: " + resultsArray);
+      }
+      else {
+        alert("results: " + resultsArray);
+      }
+    });
+  }
+
+  initCardPickedSubscription() : void {
+    this.cardPickedSubscription = this.socketService.getPickedCard().subscribe((cardText) => {
+      //wait for the other players to vote
+      if(this.currMode == cardMode.myTurn) { 
+        this.currMode = cardMode.waiting;
+      }
+      //allow voters to vote since a card was picked, and display the card
+      else { 
+        this.currMode = cardMode.voting;
+        alert(cardText);
+      }
+    });
+  }
+  initPlayerListSubscription() : void {
+    this.playerListSubscription = this.socketService.getOtherPlayerList().subscribe( (plist) => {
+      this.playerList = plist;
+    });
+  }
+
+  initTurnSubscription() : void {
+    this.isTurnSubscription = this.socketService.getIsTurn().subscribe( (isTurn) => {
+      this.isTurn = isTurn;
+      if(isTurn) {
+        this.currMode = cardMode.myTurn;
+      }
+      else {
+        this.currMode = cardMode.waiting;
+      }
+      
+    });
+  }
+  initRoutingSubscription() : void {
     this.routingSubscription = this.router.events.subscribe( event => {
       if (event instanceof NavigationStart ) {
         this.socketService.disconnectSocket();
         console.log('here');
       }
     });
-
-    //initially, get card mode and list of players other than current player
-    this.updateCardMode(this.socketService.isTurnOnStart);
-    this.playerList = this.socketService.allOtherPlayersOnStart;
-
-    this.isTurnSubscription = this.socketService.getIsTurn().subscribe( (msg) => {
-      this.updateCardMode(msg);
-    });
-
-    this.playerListSubscription = this.socketService.getOtherPlayerList().subscribe( (msg) => {
-      this.playerList = msg;
-    });
   }
-
   
-  updateCardMode(isTurn : boolean) : void {
-    if(isTurn){
+  initCardMode() : void {
+    //initially, get card mode and list of players other than current player
+    if(this.socketService.isTurnOnStart) {
       this.currMode = cardMode.myTurn;
     }
-    else{
-      this.currMode = cardMode.voting;
+    else {
+      this.currMode = cardMode.waiting;
     }
   }
 
+
   ngOnDestroy(): void {
-    if (this.routingSubscription) {
+    if(this.routingSubscription) {
       this.routingSubscription.unsubscribe();
     }
     if(this.isTurnSubscription) {
@@ -77,6 +129,12 @@ export class GameViewComponent implements OnInit {
     }
     if(this.playerListSubscription) {
       this.playerListSubscription.unsubscribe();
+    }
+    if(this.cardPickedSubscription) {
+      this.cardPickedSubscription.unsubscribe();
+    }
+    if(this.voteResultsSubscription) {
+      this.voteResultsSubscription.unsubscribe();
     }
   }
 
