@@ -219,6 +219,8 @@ io.on('connection', function(socket) {
     //recieve votes
     socket.on('clientSendVote', function(code, playerId) {
         voteResults.push(playerId);
+        console.log("pushing player vote of : ");
+        console.log(playerId);
         console.log("numvotes: " + voteResults.length);
         if(voteResults.length >= numVotingPlayers){
             console.log("sending vote results...");

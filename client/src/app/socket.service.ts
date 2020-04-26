@@ -148,7 +148,8 @@ export class SocketService {
     return observable;
   }
 
-  submitVote(playerId : string) : void{
+  submitVote(playerId : String) : void{
+    console.log("in socket service, got player as " + playerId);
     this.socket.emit('clientSendVote', this.connectedRoom, playerId);
   }
 
