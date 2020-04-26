@@ -213,16 +213,17 @@ io.on('connection', function(socket) {
         io.to(code).emit('serverSendCardPicked', card);
     });
 
-    //recieve votes
+    //recieve votes, send them to the current game host when fully collected
     socket.on('clientSendVote', function(code, playerVotedFor) {
         voteResults.push(playerVotedFor);
         console.log("pushing player vote of : " + playerVotedFor.name);
         console.log("numvotes: " + voteResults.length);
         if(voteResults.length >= numVotingPlayers){
             console.log("sending vote results...");
-            io.to(code).emit('serverSendVoteResults', voteResults);
+            io.to(sessions[code].playerQueue.peek().Id).emit('serverSendVoteResults', voteResults);
         }
     });
+
 });
 
 if (!process.argv.includes('--dev')) {

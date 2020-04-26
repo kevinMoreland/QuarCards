@@ -28,9 +28,7 @@ export class GameViewComponent implements OnInit {
   playerList: Array<any>;
 
   constructor( private socketService: SocketService,
-    private router: Router) {
-      
-    }
+    private router: Router) {}
 
   ngOnInit(): void {
     console.log("init game view");
@@ -68,7 +66,8 @@ export class GameViewComponent implements OnInit {
         this.setVoteResultsPopup(true, resultsArray);
       }
       else {
-        this.setVoteResultsPopup(true, resultsArray);
+        //this.setVoteResultsPopup(true, resultsArray);
+        alert("voter should wait for closing other box..");
       }
     });
   }
@@ -130,6 +129,10 @@ export class GameViewComponent implements OnInit {
 
   closeResultsPopup() : void {
     this.setVoteResultsPopup(false, []);
+    
+    if(this.isTurn){
+      this.socketService.giveUpTurn();
+    }
   }
 
   ngOnDestroy(): void {

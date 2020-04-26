@@ -148,6 +148,10 @@ export class SocketService {
     return observable;
   }
 
+  revealVoteResults(results : Array<any>) : void {
+    this.socket.emit('revealVoteResults', this.connectedRoom, results);
+  }
+
   submitVote(playerVotedFor) : void{
     console.log("in socket service, got player as " + playerVotedFor.Id +", " + playerVotedFor.name);
     this.socket.emit('clientSendVote', this.connectedRoom, playerVotedFor);
