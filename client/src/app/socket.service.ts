@@ -148,9 +148,9 @@ export class SocketService {
     return observable;
   }
 
-  submitVote(playerId : String) : void{
-    console.log("in socket service, got player as " + playerId);
-    this.socket.emit('clientSendVote', this.connectedRoom, playerId);
+  submitVote(playerVotedFor) : void{
+    console.log("in socket service, got player as " + playerVotedFor.Id +", " + playerVotedFor.name);
+    this.socket.emit('clientSendVote', this.connectedRoom, playerVotedFor);
   }
 
   //get the list of all players excluding current player

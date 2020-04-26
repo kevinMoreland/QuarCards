@@ -8,7 +8,7 @@ import { cardMode } from '../../entity/data-structures/card-modes';
   styleUrls: ['./player-block.component.css']
 })
 export class PlayerBlockComponent implements OnInit {
-  @Input() name: String;
+  @Input() player: any;
   @Input() currMode: cardMode;
   constructor(private socketService: SocketService) { }
 
@@ -17,8 +17,8 @@ export class PlayerBlockComponent implements OnInit {
 
   vote() : void {
     if(this.currMode == cardMode.voting) {
-      alert("voting for " + this.name);
-      this.socketService.submitVote(this.name);
+      alert("voting for " + this.player.name + ", with id " + this.player.Id);
+      this.socketService.submitVote(this.player);
     }
     else {
       alert("not my turn to vote ...");
