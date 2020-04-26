@@ -1,4 +1,4 @@
-import { Component, OnInit, ElementRef } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { SocketService } from '../socket.service';
 import { Subscription } from 'rxjs';
 import { NavigationStart, Router } from '@angular/router';
@@ -15,6 +15,8 @@ import { cardMode } from '../../entity/data-structures/card-modes';
 export class GameViewComponent implements OnInit {
   browserRefresh: boolean;
   @Output() currMode : cardMode;
+  @Output() voteResultsPopupIsOpen : boolean;
+  @Output() voteResults : Array<any>;
   isTurn : boolean;
 
   routingSubscription: Subscription;
@@ -43,7 +45,9 @@ export class GameViewComponent implements OnInit {
     
     //initialize turn boolean
     this.isTurn = this.socketService.isTurnOnStart;
-    
+    //initialize popup box for voting
+    this.setVoteResultsPopup(false, []);
+
     this.initCardMode();
     
     //initialize list of players
@@ -61,10 +65,10 @@ export class GameViewComponent implements OnInit {
   initVoteResultsSubscription() : void {
     this.voteResultsSubscription = this.socketService.getVoteResults().subscribe((resultsArray) => {
       if(this.isTurn) {
-        alert("results, card picker: " + resultsArray);
+        this.setVoteResultsPopup(true, resultsArray);
       }
       else {
-        alert("results: " + resultsArray);
+        this.setVoteResultsPopup(true, resultsArray);
       }
     });
   }
@@ -119,6 +123,14 @@ export class GameViewComponent implements OnInit {
     }
   }
 
+  setVoteResultsPopup(isOpen : boolean, results : Array<any>) : void {
+    this.voteResults = results;
+    this.voteResultsPopupIsOpen = isOpen;
+  }
+
+  closeResultsPopup() : void {
+    this.setVoteResultsPopup(false, []);
+  }
 
   ngOnDestroy(): void {
     if(this.routingSubscription) {
