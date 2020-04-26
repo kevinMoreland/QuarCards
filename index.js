@@ -127,7 +127,7 @@ io.on('connection', function(socket) {
         code = code.toUpperCase();
         console.log(code);
         var newPlayer = new Player(socket.id, username);
-        if (sessions[code]) {
+        if (sessions[code] && !sessions[code].playerQueue.containsPlayer(newPlayer)) {
             sessions[code].playerQueue.enqueue(newPlayer);
             socket.roomCode = code;
             socket.join(code);
@@ -144,9 +144,6 @@ io.on('connection', function(socket) {
             
             io.to(code).emit('serverUpdatePlayerList', playerList);
             io.to(socket.id).emit('connected', code, isTurn, playerList);
-        }
-        else {
-            console.log("Room not found: " + code);
         }
     });
 

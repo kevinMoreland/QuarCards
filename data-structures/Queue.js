@@ -11,6 +11,10 @@ function Queue(){
     this.getLength=function(){return a.length};
     this.isEmpty=function(){return 0==a.length};
     this.enqueue=function(b){a.push(b)};
+    this.containsPlayer=function(player){
+        var i = a.findIndex(function(arrVal){return arrVal.Id == player.Id});
+        return i >= 0;
+    };
     this.dequeue=function(){
         if(a.length != 0){
             var poppedOff = a[0];
