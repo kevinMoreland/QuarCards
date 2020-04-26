@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { SocketService } from '../socket.service';
 import { Subscription } from 'rxjs';
 import { NavigationStart, Router } from '@angular/router';
@@ -6,6 +6,7 @@ import { Output } from '@angular/core';
 
 import { browserRefresh } from '../app.component';
 import { cardMode } from '../../entity/data-structures/card-modes';
+import { ResultsPopupComponent } from '../results-popup/results-popup.component';
 
 @Component({
   selector: 'app-game-view',
@@ -15,8 +16,8 @@ import { cardMode } from '../../entity/data-structures/card-modes';
 export class GameViewComponent implements OnInit {
   browserRefresh: boolean;
   @Output() currMode : cardMode;
-  @Output() voteResultsPopupIsOpen : boolean;
-  @Output() voteResults : Array<any>;
+  @ViewChild(ResultsPopupComponent) resultsPopup: ResultsPopupComponent;
+  
   isTurn : boolean;
 
   routingSubscription: Subscription;
@@ -32,7 +33,7 @@ export class GameViewComponent implements OnInit {
 
   ngOnInit(): void {
     console.log("init game view");
-
+    
     this.browserRefresh = browserRefresh;
     if (this.browserRefresh) {
       this.router.navigate(['/']);
@@ -43,8 +44,6 @@ export class GameViewComponent implements OnInit {
     
     //initialize turn boolean
     this.isTurn = this.socketService.isTurnOnStart;
-    //initialize popup box for voting
-    this.setVoteResultsPopup(false, []);
 
     this.initCardMode();
     
@@ -63,7 +62,7 @@ export class GameViewComponent implements OnInit {
   initVoteResultsSubscription() : void {
     this.voteResultsSubscription = this.socketService.getVoteResults().subscribe((resultsArray) => {
       if(this.isTurn) {
-        this.setVoteResultsPopup(true, resultsArray);
+        this.resultsPopup.open(resultsArray);
       }
       else {
         //this.setVoteResultsPopup(true, resultsArray);
@@ -119,19 +118,6 @@ export class GameViewComponent implements OnInit {
     }
     else {
       this.currMode = cardMode.waiting;
-    }
-  }
-
-  setVoteResultsPopup(isOpen : boolean, results : Array<any>) : void {
-    this.voteResults = results;
-    this.voteResultsPopupIsOpen = isOpen;
-  }
-
-  closeResultsPopup() : void {
-    this.setVoteResultsPopup(false, []);
-    
-    if(this.isTurn){
-      this.socketService.giveUpTurn();
     }
   }
 

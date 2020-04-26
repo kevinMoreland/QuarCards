@@ -1,5 +1,5 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { NgModel } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import { SocketService } from '../socket.service';
 
 @Component({
   selector: 'app-results-popup',
@@ -8,14 +8,19 @@ import { NgModel } from '@angular/forms';
 })
 export class ResultsPopupComponent implements OnInit {
 
-  @Input() popupIsOpen : boolean;
-  @Input() voteResults : Array<any>;
+  popupIsOpen : boolean;
 
-  @Output() closePopup = new EventEmitter();
-
-  constructor() { }
+  constructor(private socketService: SocketService) { }
 
   ngOnInit(): void {
+    this.popupIsOpen = false;
   }
 
+  open(voteResults: Array<any>) : void {
+    this.popupIsOpen = true;
+  }
+  close() : void {
+    this.popupIsOpen = false;
+    this.socketService.giveUpTurn();
+  }
 }
