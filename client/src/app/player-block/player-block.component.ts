@@ -1,7 +1,6 @@
-import { Component, OnInit, Input, Output } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { SocketService } from '../socket.service';
 import { cardMode } from '../../entity/data-structures/card-modes';
-import { EventEmitter } from 'protractor';
 
 @Component({
   selector: 'app-player-block',
