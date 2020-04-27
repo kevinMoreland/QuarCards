@@ -22,6 +22,8 @@ export class GameViewComponent implements OnInit {
 
   isTurn : boolean;
 
+  @Output() hasVoted : boolean;
+
   routingSubscription: Subscription;
   isTurnSubscription: Subscription;
   playerListSubscription: Subscription;
@@ -67,10 +69,6 @@ export class GameViewComponent implements OnInit {
       if(this.isTurn) {
         this.resultsPopup.open(resultsArray);
       }
-      else {
-        //this.setVoteResultsPopup(true, resultsArray);
-        alert("voter should wait for closing other box..");
-      }
     });
   }
   initRoundIsCancelledSubscription() : void {
@@ -82,6 +80,7 @@ export class GameViewComponent implements OnInit {
     });
   }
   initCardPickedSubscription() : void {
+    this.hasVoted = false;
     this.cardPickedSubscription = this.socketService.getPickedCard().subscribe((cardText) => {
       //wait for the other players to vote
       if(this.currMode == cardMode.myTurn) { 
@@ -129,6 +128,9 @@ export class GameViewComponent implements OnInit {
     else {
       this.currMode = cardMode.waiting;
     }
+  }
+  onVoted(): void {
+    this.hasVoted = true;
   }
 
   ngOnDestroy(): void {
