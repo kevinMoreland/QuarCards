@@ -102,10 +102,30 @@ export class SocketService {
   giveUpTurn(){
     this.socket.emit('clientGivingUpTurn', this.connectedRoom);
   }
+
   getIsTurn() : Observable<boolean>{
     let observable = new Observable<boolean>( observer => {
       this.socket.on('serverSendIsTurn', (isTurn) => {
         observer.next(isTurn);
+      });
+      return () => {
+        this.disconnectSocket();
+      };
+    });
+
+    return observable;
+  }
+
+  //a round is cancelled if it is someone's turn to pick a card and collect votes, but they disconnect
+  getRoundIsCancelled() : Observable<boolean> {
+    let observable = new Observable<boolean>( observer => {
+      this.socket.on('roundCancelled', (idNextRoundHost) => {
+        var isNewHost : boolean;
+        isNewHost = false;
+        if(this.socket.id == idNextRoundHost){
+          isNewHost = true;
+        }
+        observer.next(isNewHost);
       });
       return () => {
         this.disconnectSocket();

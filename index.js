@@ -172,7 +172,9 @@ io.on('connection', function(socket) {
 
             if(isTurn)
             {
+                voteResults = [];
                 io.to(sessions[socket.roomCode].playerQueue.peek().Id).emit('serverSendIsTurn', true);
+                io.to(socket.roomCode).emit('roundCancelled', sessions[socket.roomCode].playerQueue.peek().Id);
             }
             else {
                 //one voting player has left. don't do this if turn b/c that player doesn't vote

@@ -13,7 +13,8 @@ import { PlayerBlockComponent } from './player-block/player-block.component';
 import { MyCardsComponent } from './my-cards/my-cards.component';
 import { HttpClientModule } from '@angular/common/http';
 import { ChatComponent } from './chat/chat.component';
-import { ResultsPopupComponent } from './results-popup/results-popup.component'; 
+import { ResultsPopupComponent } from './results-popup/results-popup.component';
+import { AlertPopupComponent } from './alert-popup/alert-popup.component'; 
 
 const appRoutes: Routes = [
   { path: 'game', component: GameViewComponent },
@@ -33,6 +34,7 @@ const appRoutes: Routes = [
     MyCardsComponent,
     ChatComponent,
     ResultsPopupComponent,
+    AlertPopupComponent,
   ],
   imports: [
     BrowserModule,

@@ -7,6 +7,7 @@ import { Output } from '@angular/core';
 import { browserRefresh } from '../app.component';
 import { cardMode } from '../../entity/data-structures/card-modes';
 import { ResultsPopupComponent } from '../results-popup/results-popup.component';
+import { AlertPopupComponent } from '../alert-popup/alert-popup.component';
 
 @Component({
   selector: 'app-game-view',
@@ -17,7 +18,8 @@ export class GameViewComponent implements OnInit {
   browserRefresh: boolean;
   @Output() currMode : cardMode;
   @ViewChild(ResultsPopupComponent) resultsPopup: ResultsPopupComponent;
-  
+  @ViewChild(AlertPopupComponent) alertPopup: AlertPopupComponent;
+
   isTurn : boolean;
 
   routingSubscription: Subscription;
@@ -25,7 +27,7 @@ export class GameViewComponent implements OnInit {
   playerListSubscription: Subscription;
   cardPickedSubscription: Subscription;
   voteResultsSubscription: Subscription;
-
+  roundIsCancelledSubscription: Subscription;
   playerList: Array<any>;
 
   constructor( private socketService: SocketService,
@@ -53,6 +55,7 @@ export class GameViewComponent implements OnInit {
     this.initTurnSubscription();
     this.initPlayerListSubscription();
     this.initVoteResultsSubscription();
+    this.initRoundIsCancelledSubscription();
   }
 
   ngAfterViewInit(): void {
@@ -70,7 +73,14 @@ export class GameViewComponent implements OnInit {
       }
     });
   }
-
+  initRoundIsCancelledSubscription() : void {
+    this.roundIsCancelledSubscription = this.socketService.getRoundIsCancelled().subscribe((isNewHost) => {
+      if(!isNewHost){
+        this.currMode = cardMode.waiting;
+      }
+      this.alertPopup.open("Someone Left", "The numb nut who was supposed to collect the vote results left the game. Restarting the previous round.");
+    });
+  }
   initCardPickedSubscription() : void {
     this.cardPickedSubscription = this.socketService.getPickedCard().subscribe((cardText) => {
       //wait for the other players to vote
@@ -136,6 +146,9 @@ export class GameViewComponent implements OnInit {
     }
     if(this.voteResultsSubscription) {
       this.voteResultsSubscription.unsubscribe();
+    }
+    if(this.roundIsCancelledSubscription) {
+      this.roundIsCancelledSubscription.unsubscribe();
     }
   }
 
