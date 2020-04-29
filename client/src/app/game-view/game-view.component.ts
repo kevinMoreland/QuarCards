@@ -22,6 +22,7 @@ export class GameViewComponent implements OnInit {
 
   isTurn : boolean;
   firstPlayer : boolean;
+  @Output() votingPhrase : string;
 
   routingSubscription: Subscription;
   isTurnSubscription: Subscription;
@@ -93,14 +94,21 @@ export class GameViewComponent implements OnInit {
   }
   initCardPickedSubscription() : void {
     this.cardPickedSubscription = this.socketService.getPickedCard().subscribe((cardText) => {
-      //wait for the other players to vote
-      if(this.currMode == cardMode.myTurn) { 
-        this.currMode = cardMode.waiting;
+      
+      var roomEmpty = this.playerList.length == 0;
+      if(!roomEmpty) {
+        //wait for the other players to vote
+        if(this.currMode == cardMode.myTurn) { 
+          this.currMode = cardMode.waiting;
+        }
+        //allow voters to vote since a card was picked, and display the card
+        else { 
+          this.currMode = cardMode.voting;
+          this.votingPhrase = cardText;
+        }
       }
-      //allow voters to vote since a card was picked, and display the card
-      else { 
-        this.currMode = cardMode.voting;
-        alert(cardText);
+      else {
+        this.alertPopup.open("Empty room...", "You can't pick a card if there's no one to vote");
       }
     });
   }
