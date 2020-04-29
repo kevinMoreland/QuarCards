@@ -174,7 +174,7 @@ export class SocketService {
 
   submitVote(playerVotedFor) : void{
     console.log("in socket service, got player as " + playerVotedFor.Id +", " + playerVotedFor.name);
-    this.socket.emit('clientSendVote', this.connectedRoom, playerVotedFor);
+    this.socket.emit('clientSendVote', this.connectedRoom, playerVotedFor, this.socket.id);
   }
 
   //get the list of all players excluding current player

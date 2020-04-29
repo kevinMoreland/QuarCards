@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, SimpleChanges, ViewChild, ElementRef } from '@angular/core';
 import { SocketService } from '../socket.service';
 import { cardMode } from '../../entity/data-structures/card-modes';
 
@@ -10,23 +10,44 @@ import { cardMode } from '../../entity/data-structures/card-modes';
 export class PlayerBlockComponent implements OnInit {
   @Input() player: any;
   @Input() currMode: cardMode;
-  @Input() hasVoted : boolean;
-  @Output() voted = new EventEmitter();
+  @ViewChild("voteButton", {read: ElementRef}) voteButton: ElementRef;
+
+  votingEnabled: boolean;
 
   constructor(private socketService: SocketService) { }
 
   ngOnInit(): void {
   }
-
-  
-  vote() : void {
-    if(this.currMode == cardMode.voting && !this.hasVoted) {
-      alert("voting for " + this.player.name + ", with id " + this.player.Id);
-      this.socketService.submitVote(this.player);
-      this.voted.emit(null);
+  ngAfterViewInit() {
+    if(this.currMode == cardMode.voting) {
+      setTimeout(() => {
+        this.votingEnabled = true;
+      });
+      
     }
     else {
-      alert("not my turn to vote ...");
+      setTimeout(() => {
+        this.votingEnabled = false;
+      });
     }
+  }
+  
+  ngOnChanges(changes : SimpleChanges): void{
+    if(changes.currMode && this.voteButton != null) {
+      if(this.currMode == cardMode.voting) {
+        this.votingEnabled = true;
+      }
+      else {
+        this.votingEnabled = false;
+      }
+    }
+  }
+
+  vote() : void {
+    if(this.votingEnabled) {
+      this.socketService.submitVote(this.player);
+    }
+
+    this.votingEnabled = false;
   }
 }

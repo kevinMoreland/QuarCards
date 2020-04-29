@@ -16,6 +16,7 @@ export class AlertPopupComponent implements OnInit {
   ngOnInit(): void {
   }
   open(alertTitle:string, alertMessage: string) : void {
+    close();
     this.bodyText.nativeElement.textContent = alertMessage;
     this.titleText.nativeElement.textContent = alertTitle;
     this.popupIsOpen = true;

@@ -179,6 +179,11 @@ io.on('connection', function(socket) {
             else {
                 //one voting player has left. don't do this if turn b/c that player doesn't vote
                 numVotingPlayers -= 1;
+
+                //if all voters leave, cancel the vote results
+                if(numVotingPlayers == 0) {
+                    voteResults = [];
+                }
             }
         }
         else{
@@ -216,7 +221,7 @@ io.on('connection', function(socket) {
     });
 
     //recieve votes, send them to the current game host when fully collected
-    socket.on('clientSendVote', function(code, playerVotedFor) {
+    socket.on('clientSendVote', function(code, playerVotedFor, votingPlayer) {
         voteResults.push(playerVotedFor);
         console.log("pushing player vote of : " + playerVotedFor.name);
         console.log("numvotes: " + voteResults.length);

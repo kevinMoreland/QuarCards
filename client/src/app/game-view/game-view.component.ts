@@ -21,8 +21,7 @@ export class GameViewComponent implements OnInit {
   @ViewChild(AlertPopupComponent) alertPopup: AlertPopupComponent;
 
   isTurn : boolean;
-
-  @Output() hasVoted : boolean;
+  firstPlayer : boolean;
 
   routingSubscription: Subscription;
   isTurnSubscription: Subscription;
@@ -48,12 +47,11 @@ export class GameViewComponent implements OnInit {
     
     //initialize turn boolean
     this.isTurn = this.socketService.isTurnOnStart;
-
-    this.initCardMode();
-    
     //initialize list of players
     this.playerList = this.socketService.allOtherPlayersOnStart;
+    this.firstPlayer = this.isTurn && this.playerList.length == 0;
 
+    this.initCardMode();
     this.initTurnSubscription();
     this.initPlayerListSubscription();
     this.initVoteResultsSubscription();
@@ -62,6 +60,19 @@ export class GameViewComponent implements OnInit {
 
   ngAfterViewInit(): void {
     this.initCardPickedSubscription();
+    //welcome message
+    //TODO this throws an error, fix it
+    if(this.firstPlayer) {
+      //the "setTimeout" avoids the ExpressionChangedAfterChecked error I was getting
+      setTimeout(() => {
+        this.alertPopup.open("You look lonely...", "Send the game code at the top of the screen to your friends so they can join you!");
+      });
+    }
+    else if (!this.isTurn){
+      setTimeout(() => {
+        this.alertPopup.open("Welcome Aboard", "Wait for your friend to pick a card, then vote for whoever you think the card best fits!");
+      });
+    }
   }
   
   initVoteResultsSubscription() : void {
@@ -76,11 +87,11 @@ export class GameViewComponent implements OnInit {
       if(!isNewHost){
         this.currMode = cardMode.waiting;
       }
+      
       this.alertPopup.open("Someone Left", "The numb nut who was supposed to collect the vote results left the game. Restarting the previous round.");
     });
   }
   initCardPickedSubscription() : void {
-    this.hasVoted = false;
     this.cardPickedSubscription = this.socketService.getPickedCard().subscribe((cardText) => {
       //wait for the other players to vote
       if(this.currMode == cardMode.myTurn) { 
@@ -96,6 +107,10 @@ export class GameViewComponent implements OnInit {
   initPlayerListSubscription() : void {
     this.playerListSubscription = this.socketService.getOtherPlayerList().subscribe( (plist) => {
       this.playerList = plist;
+      if(plist.length == 0) {
+        this.alertPopup.open("Empty room...", "Where did all your friends go?");
+        this.currMode = cardMode.myTurn;
+      }
     });
   }
 
@@ -128,9 +143,6 @@ export class GameViewComponent implements OnInit {
     else {
       this.currMode = cardMode.waiting;
     }
-  }
-  onVoted(): void {
-    this.hasVoted = true;
   }
 
   ngOnDestroy(): void {
