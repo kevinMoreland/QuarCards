@@ -10,6 +10,7 @@ import { cardMode } from '../../entity/data-structures/card-modes';
 export class PlayerBlockComponent implements OnInit {
   @Input() player: any;
   @Input() currMode: cardMode;
+  @Output() voted = new EventEmitter();
   @ViewChild("voteButton", {read: ElementRef}) voteButton: ElementRef;
 
   votingEnabled: boolean;
@@ -46,6 +47,7 @@ export class PlayerBlockComponent implements OnInit {
   vote() : void {
     if(this.votingEnabled) {
       this.socketService.submitVote(this.player);
+      this.voted.emit(true);
     }
 
     this.votingEnabled = false;

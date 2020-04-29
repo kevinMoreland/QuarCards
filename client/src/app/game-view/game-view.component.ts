@@ -144,6 +144,9 @@ export class GameViewComponent implements OnInit {
       this.currMode = cardMode.waiting;
     }
   }
+  onVoted(): void {
+    this.currMode = cardMode.waiting;
+  }
 
   ngOnDestroy(): void {
     if(this.routingSubscription) {
