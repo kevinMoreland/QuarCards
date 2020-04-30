@@ -16,6 +16,7 @@ export class PlayingCardComponent implements OnInit {
 
 
   @Input() currMode : cardMode;
+  @Input() votingPhraseText : string;
   @ViewChild("cardBackText", {read: ElementRef}) cardText: ElementRef;
   @ViewChild("cardFlipper", {read: ElementRef}) card: ElementRef;
   @ViewChild("choiceButton", {read: ElementRef}) choiceButton: ElementRef;
@@ -47,7 +48,12 @@ export class PlayingCardComponent implements OnInit {
         case cardMode.voting: {
           this.cardText.nativeElement.textContent = "";
           this.transitionCardToFace("front");
-          this.cardText.nativeElement.textContent = "vote above !";
+          if(this.votingPhraseText == null) {
+            this.cardText.nativeElement.textContent = "vote above !";
+          }
+          else {
+            this.cardText.nativeElement.textContent = this.votingPhraseText;
+          }
           break;
         }
         case cardMode.waiting: {
@@ -113,6 +119,6 @@ export class PlayingCardComponent implements OnInit {
 
   onCardPicked() : void{
     console.log("card picked: " + this.cardText.nativeElement.textContent);
-    this.socketService.giveUpTurn();
+    this.socketService.pickCard(this.cardText.nativeElement.textContent);
   }
 }

@@ -1,0 +1,15 @@
+<div class="modal fade" id="resultsModal" tabindex="-1" role="dialog" aria-labelledby="resultsModalTitle" aria-hidden="true" [ngStyle]="{'display': popupIsOpen ? 'block' : 'none', 'opacity': 1}">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="resultsModalTitle">Vote Results</h5>
+        </div>
+        <div class="modal-body">
+          <p #resultsText></p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="close()">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>

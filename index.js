@@ -21,6 +21,8 @@ const buildDirectory = '/client/dist/client';
 
 var sessions = {};
 
+var numVotingPlayers = 0;
+var voteResults = [];
 
 const route = require('./routes/route.js');
 
@@ -125,7 +127,7 @@ io.on('connection', function(socket) {
         code = code.toUpperCase();
         console.log(code);
         var newPlayer = new Player(socket.id, username);
-        if (sessions[code]) {
+        if (sessions[code] && !sessions[code].playerQueue.containsPlayer(newPlayer)) {
             sessions[code].playerQueue.enqueue(newPlayer);
             socket.roomCode = code;
             socket.join(code);
@@ -142,9 +144,6 @@ io.on('connection', function(socket) {
             
             io.to(code).emit('serverUpdatePlayerList', playerList);
             io.to(socket.id).emit('connected', code, isTurn, playerList);
-        }
-        else {
-            console.log("Room not found: " + code);
         }
     });
 
@@ -173,8 +172,19 @@ io.on('connection', function(socket) {
 
             if(isTurn)
             {
+                voteResults = [];
                 io.to(sessions[socket.roomCode].playerQueue.peek().Id).emit('serverSendIsTurn', true);
-            }   
+                io.to(socket.roomCode).emit('roundCancelled', sessions[socket.roomCode].playerQueue.peek().Id);
+            }
+            else {
+                //one voting player has left. don't do this if turn b/c that player doesn't vote
+                numVotingPlayers -= 1;
+
+                //if all voters leave, cancel the vote results
+                if(numVotingPlayers == 0) {
+                    voteResults = [];
+                }
+            }
         }
         else{
             //delete room
@@ -187,6 +197,7 @@ io.on('connection', function(socket) {
         {
             var prevQueueHead = sessions[code].playerQueue.dequeue();
             sessions[code].playerQueue.enqueue(prevQueueHead);
+
             console.log("Gave up turn, new queue looks like:");
             console.log(sessions[code].playerQueue.asArray());
             io.to(socket.id).emit('serverSendIsTurn', false);
@@ -197,6 +208,29 @@ io.on('connection', function(socket) {
             console.log("It is not my turn, can't give up turn...");
         }
     });
+
+    //send the picked card to everyone in the room
+    socket.on('clientPickedCard', function(code, card) {
+        
+        //clear old voting results
+        voteResults = [];
+        //set number of voting players to all players minus player picking card
+        numVotingPlayers = sessions[code].playerQueue.getLength() - 1;
+        console.log("num Players voting: " + numVotingPlayers);
+        io.to(code).emit('serverSendCardPicked', card);
+    });
+
+    //recieve votes, send them to the current game host when fully collected
+    socket.on('clientSendVote', function(code, playerVotedFor, votingPlayer) {
+        voteResults.push(playerVotedFor);
+        console.log("pushing player vote of : " + playerVotedFor.name);
+        console.log("numvotes: " + voteResults.length);
+        if(voteResults.length >= numVotingPlayers){
+            console.log("sending vote results...");
+            io.to(sessions[code].playerQueue.peek().Id).emit('serverSendVoteResults', voteResults);
+        }
+    });
+
 });
 
 if (!process.argv.includes('--dev')) {

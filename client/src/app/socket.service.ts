@@ -30,8 +30,8 @@ export class SocketService {
     if (this.socket) {
       return;
     }
-    //var hostname = 'http://localhost:3000';
-    var hostname = 'https://strawberry-sundae-17314.herokuapp.com';
+    var hostname = 'http://localhost:3000';
+    //var hostname = 'https://strawberry-sundae-17314.herokuapp.com';
     //var hostname = 'http://localhost:5000';
 
     this.socket = io(hostname);
@@ -102,10 +102,11 @@ export class SocketService {
   giveUpTurn(){
     this.socket.emit('clientGivingUpTurn', this.connectedRoom);
   }
+
   getIsTurn() : Observable<boolean>{
     let observable = new Observable<boolean>( observer => {
-      this.socket.on('serverSendIsTurn', (msg) => {
-        observer.next(msg);
+      this.socket.on('serverSendIsTurn', (isTurn) => {
+        observer.next(isTurn);
       });
       return () => {
         this.disconnectSocket();
@@ -113,6 +114,67 @@ export class SocketService {
     });
 
     return observable;
+  }
+
+  //a round is cancelled if it is someone's turn to pick a card and collect votes, but they disconnect
+  getRoundIsCancelled() : Observable<boolean> {
+    let observable = new Observable<boolean>( observer => {
+      this.socket.on('roundCancelled', (idNextRoundHost) => {
+        var isNewHost : boolean;
+        isNewHost = false;
+        if(this.socket.id == idNextRoundHost){
+          isNewHost = true;
+        }
+        observer.next(isNewHost);
+      });
+      return () => {
+        this.disconnectSocket();
+      };
+    });
+
+    return observable;
+  }
+
+  //signal to the server that a card was picked
+  pickCard(cardText : string) : void {
+    this.socket.emit('clientPickedCard', this.connectedRoom, cardText);
+  }
+
+  //wait for the card picked by player with the turn
+  getPickedCard() : Observable<string>{
+    let observable = new Observable<string>( observer => {
+      this.socket.on('serverSendCardPicked', (cardText) => {
+        observer.next(cardText);
+      });
+      return () => {
+        this.disconnectSocket();
+      };
+    });
+
+    return observable;
+  }
+
+  //wait for the voting results for the round
+  getVoteResults() : Observable<Array<any>>{
+    let observable = new Observable<Array<any>>( observer => {
+      this.socket.on('serverSendVoteResults', (results) => {
+        observer.next(results);
+      });
+      return () => {
+        this.disconnectSocket();
+      };
+    });
+
+    return observable;
+  }
+
+  revealVoteResults(results : Array<any>) : void {
+    this.socket.emit('revealVoteResults', this.connectedRoom, results);
+  }
+
+  submitVote(playerVotedFor) : void{
+    console.log("in socket service, got player as " + playerVotedFor.Id +", " + playerVotedFor.name);
+    this.socket.emit('clientSendVote', this.connectedRoom, playerVotedFor, this.socket.id);
   }
 
   //get the list of all players excluding current player
