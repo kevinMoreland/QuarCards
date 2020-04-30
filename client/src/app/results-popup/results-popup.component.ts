@@ -23,6 +23,8 @@ export class ResultsPopupComponent implements OnInit {
     var reachedArrElements = [];
     var playerWithMaxVotes = "";
     var maxVotes = 0;
+
+    //sort the names so results display consistantely 
     voteResults.sort((a, b) => (a.name > b.name) ? 1 : -1)
 
     voteResults.forEach(function (player) {

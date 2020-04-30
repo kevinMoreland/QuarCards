@@ -13,6 +13,7 @@ export class PlayerBlockComponent implements OnInit {
   @Output() voted = new EventEmitter();
   @ViewChild("voteButton", {read: ElementRef}) voteButton: ElementRef;
 
+  //used in the html file to determine if button is grayed out (disabled) or colored (enabled)
   votingEnabled: boolean;
 
   constructor(private socketService: SocketService) { }
@@ -47,9 +48,9 @@ export class PlayerBlockComponent implements OnInit {
   vote() : void {
     if(this.votingEnabled) {
       this.socketService.submitVote(this.player);
+
+      //after emitting the vote event, gameview will change currMode to waiting, and disable voting buttons
       this.voted.emit(true);
     }
-
-    this.votingEnabled = false;
   }
 }

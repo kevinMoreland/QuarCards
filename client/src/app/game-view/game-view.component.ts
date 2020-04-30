@@ -25,11 +25,17 @@ export class GameViewComponent implements OnInit {
   @Output() votingPhrase : string;
 
   routingSubscription: Subscription;
+  //updates player when turns are tranferred in the game
   isTurnSubscription: Subscription;
+  //updates the list of other players currently in the game
   playerListSubscription: Subscription;
+  //signals to the player when a card is picked to vote on
   cardPickedSubscription: Subscription;
+  //signals to the player when vote results are available after a round of voting
   voteResultsSubscription: Subscription;
+  //signals to player when a round is cancelled because someone who was collecting votes leaves
   roundIsCancelledSubscription: Subscription;
+
   playerList: Array<any>;
 
   constructor( private socketService: SocketService,
@@ -152,6 +158,7 @@ export class GameViewComponent implements OnInit {
       this.currMode = cardMode.waiting;
     }
   }
+  
   onVoted(): void {
     this.currMode = cardMode.waiting;
   }
