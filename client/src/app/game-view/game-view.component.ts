@@ -87,6 +87,9 @@ export class GameViewComponent implements OnInit {
       if(this.isTurn) {
         this.resultsPopup.open(resultsArray);
       }
+      else {
+        this.alertPopup.open("Voting done!", "Wait for this round's card reader to reveal the results with the group");
+      }
     });
   }
   initRoundIsCancelledSubscription() : void {
