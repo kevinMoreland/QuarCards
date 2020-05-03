@@ -65,6 +65,7 @@
 /* front pane, placed above back */
 .front {
 	z-index: 2;
+	/* z-index: -1; */
 	/* for firefox 31 */
   transform: rotateY(0deg);
   background-color: black;
@@ -73,6 +74,8 @@
 
 /* back, initially hidden pane */
 .back {
+	/* z-index: 2; */
+	z-index: -1;
   transform: rotateY(180deg);
   background-color: whitesmoke;
   color: #050505;
