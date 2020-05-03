@@ -41,7 +41,7 @@ export class ResultsPopupComponent implements OnInit {
       }
     });
 
-    parsedResults += ("\n" + playerWithMaxVotes + " wins the card");
+    parsedResults += ("\n" + playerWithMaxVotes + " wins the card.\nReveal the results to the other players!");
     return parsedResults;
   }
   open(voteResults: Array<any>) : void {
