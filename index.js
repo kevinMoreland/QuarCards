@@ -27,6 +27,7 @@ numCards = 91;
 
 var numVotingPlayers = 0;
 var voteResults = [];
+var playersWhoVoted = [];
 
 const route = require('./routes/route.js');
 
@@ -59,6 +60,10 @@ function generateCode() {
         code = Math.random().toString(36).substring(2, 6).toUpperCase();
     }
     return code;
+}
+function clearVotingInfo() {
+    voteResults = [];
+    playersWhoVoted = [];
 }
 
 if (process.argv.includes('--dev')) {
@@ -176,17 +181,20 @@ io.on('connection', function(socket) {
 
             if(isTurn)
             {
-                voteResults = [];
+                clearVotingInfo();
                 io.to(sessions[socket.roomCode].playerQueue.peek().Id).emit('serverSendIsTurn', true);
                 io.to(socket.roomCode).emit('roundCancelled', sessions[socket.roomCode].playerQueue.peek().Id);
             }
             else {
                 //one voting player has left. don't do this if turn b/c that player doesn't vote
-                numVotingPlayers -= 1;
-
+                var playerHasSubmittedAVote = playersWhoVoted.includes(socket.id);
+                if(!playerHasSubmittedAVote) {
+                    numVotingPlayers -= 1;
+                }
+                
                 //if all voters leave, cancel the vote results
                 if(numVotingPlayers == 0) {
-                    voteResults = [];
+                    clearVotingInfo();
                 }
             }
         }
@@ -227,7 +235,7 @@ io.on('connection', function(socket) {
             sessions[code.toUpperCase()].turnCards = [];
             console.log(sessions);
             //clear old voting results
-            voteResults = [];
+            clearVotingInfo();
             //set number of voting players to all players minus player picking card
             numVotingPlayers = sessions[code].playerQueue.getLength() - 1;
             console.log("num Players voting: " + numVotingPlayers);
@@ -241,11 +249,13 @@ io.on('connection', function(socket) {
     //recieve votes, send them to the current game host when fully collected
     socket.on('clientSendVote', function(code, playerVotedFor, votingPlayer) {
         voteResults.push(playerVotedFor);
+        playersWhoVoted.push(votingPlayer);
+
         console.log("pushing player vote of : " + playerVotedFor.name);
         console.log("numvotes: " + voteResults.length);
         if(voteResults.length >= numVotingPlayers){
             console.log("sending vote results...");
-            io.to(sessions[code].playerQueue.peek().Id).emit('serverSendVoteResults', voteResults);
+            io.to(code).emit('serverSendVoteResults', voteResults);
         }
     });
 
