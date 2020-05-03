@@ -38,9 +38,12 @@
 	font-size: 45px;
 	padding-top: 50%;	
 }
-#cardChoiceButton{
-	font-size: 5px;
+
+.choiceButton {
+	padding: 2% 2%;
+	font-size: 1.4em;
 }
+
 .back p{
 	font-size: 25px;
 	padding-top: 20%;
@@ -57,8 +60,8 @@
 		font-size: 15px;
 		padding-top: 20%;
 	  }
-	  #cardChoiceButton{
-		  font-size: 15px;
+	  .choiceButton {
+		  font-size: 1em;
 	  }
 }
 
