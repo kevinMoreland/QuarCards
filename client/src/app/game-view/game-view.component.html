@@ -4,10 +4,7 @@
         <div class="col-8 card">
             <div class="row">
                 <app-player-block class="col" *ngFor="let player of playerList;" [player]="player" [currMode] = "currMode" (voted)="onVoted()"></app-player-block>
-                <!-- <div class="col" *ngFor="let item of TEST">testing</div> -->
             </div>
-            <!-- <span *ngFor="let item of TEST">testing</span> -->
-            <!-- <app-player-block *ngFor="let player of playerList;" [player]="player" [currMode] = "currMode" (voted)="onVoted()"></app-player-block> -->
         </div>
         <div class="col-4">
             <app-room-code [lobbyCode]="getRoomCode()"></app-room-code>
