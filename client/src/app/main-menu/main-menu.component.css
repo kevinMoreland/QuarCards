@@ -31,6 +31,10 @@ h3 {
     color: red;
 }
 
+.invalid {
+    color: red;
+}
+
 .separator {
     margin-top: 2%;
     margin-bottom: 2%;
