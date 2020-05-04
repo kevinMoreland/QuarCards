@@ -1,5 +1,4 @@
 button{
-    height: 40px;
     width: 100%;
 }
 .playerButton{
@@ -7,4 +6,12 @@ button{
     padding-left: 10px;
     padding-right: 10px;
     text-align: center;
+    font-size: 15px;
+}
+
+@media screen and (max-width: 768px)
+{
+    .playerButton{
+        font-size: 12px;
+    }
 }
