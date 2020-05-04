@@ -24,6 +24,8 @@ export class GameViewComponent implements OnInit {
   firstPlayer : boolean;
   @Output() votingPhrase : string;
 
+  TEST = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
+
   routingSubscription: Subscription;
   //updates player when turns are tranferred in the game
   isTurnSubscription: Subscription;
@@ -164,6 +166,10 @@ export class GameViewComponent implements OnInit {
   
   onVoted(): void {
     this.currMode = cardMode.waiting;
+  }
+
+  getRoomCode(): string {
+    return this.socketService.connectedRoom;
   }
 
   ngOnDestroy(): void {

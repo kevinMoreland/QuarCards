@@ -1,14 +1,19 @@
 <div class="container">
 
-    <div id = "row">
-        <div id = "players">
-            <div class = "card">
-                <div class = "row">
-                    <div *ngFor="let player of playerList;" class="col-4"><app-player-block [player]="player" [currMode] = "currMode" (voted)="onVoted()"></app-player-block></div>
-                </div>
+    <div class="row player-space justify-content-between">
+        <div class="col-8 card">
+            <div class="row">
+                <app-player-block class="col" *ngFor="let player of playerList;" [player]="player" [currMode] = "currMode" (voted)="onVoted()"></app-player-block>
+                <!-- <div class="col" *ngFor="let item of TEST">testing</div> -->
             </div>
+            <!-- <span *ngFor="let item of TEST">testing</span> -->
+            <!-- <app-player-block *ngFor="let player of playerList;" [player]="player" [currMode] = "currMode" (voted)="onVoted()"></app-player-block> -->
+        </div>
+        <div class="col-4">
+            <app-room-code [lobbyCode]="getRoomCode()"></app-room-code>
         </div>
     </div>
+
     <div class = "row" #cards>
         <div class="col-4"><app-playing-card [currMode] = "currMode" [numPlayers]="playerList.length"></app-playing-card></div>
         <div class="col-4"><app-playing-card [currMode] = "currMode" [numPlayers]="playerList.length" [votingPhraseText] ="votingPhrase"></app-playing-card></div>
