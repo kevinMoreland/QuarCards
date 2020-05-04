@@ -83,25 +83,6 @@ app.use(bodyparser.json());
 //routes
 app.use('/api', route);
 
-app.post('/checkRoom', async (req, res) => {
-    console.log('**checking room**');
-    roomCode = req.body.code;
-    if (!roomCode) {
-        res.sendStatus(401);
-        return;
-    }
-    else {
-        roomCode = roomCode.toUpperCase();
-    }
-    if (sessions[roomCode]) {
-        console.log("found!");
-        res.sendStatus(200);
-    }
-    else {
-        res.sendStatus(401);
-    }
-});
-
 io.on('connection', function(socket) {
     console.log(`user ${socket.id} has connected`);
     //console.log(socket.roomCode);

@@ -41,6 +41,49 @@ router.get('/randomCard/:roomCode', async (req, res, next) => {
     catch (error) {
         res.send({'error': error.message})
     }
+});
+
+router.get('/checkRoom/:roomCode', async (req, res) => {
+    console.log('**checking room**');
+    var code = req.params.roomCode;
+    if (!code) {
+        res.sendStatus(401);
+        return;
+    }
+    else {
+        code = code.toUpperCase();
+    }
+    if (sessions[code]) {
+        console.log("found!");
+        res.sendStatus(200);
+    }
+    else {
+        res.sendStatus(401);
+    }
+});
+
+router.get('/checkUser/:roomCode/:name', async (req, res) => {
+    var room = req.params.roomCode.toUpperCase();
+    var name = req.params.name;
+    // first player to enter room
+    if (!room || !sessions[room]) {
+        res.sendStatus(200);
+        return;
+    }
+    // room has already been made, NOT first player
+    else {
+        var players = sessions[room].playerQueue.asArray();
+        for (var p of players) {
+            if (p.name === name) {
+                res.sendStatus(401);
+                return;
+            }
+        }
+        res.sendStatus(200);
+    }
+
 })
+
+
 
 module.exports = router;
