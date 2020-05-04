@@ -31,7 +31,8 @@
   	left: 0;
   
   	text-align: center;
-  	font-style: bold;  
+	font-style: bold;
+	
 }
 
 .front p{
@@ -57,11 +58,16 @@
 		
 	  }
 	  .back p{
-		font-size: 15px;
+		font-size: 12px;
 		padding-top: 20%;
 	  }
 	  .choiceButton {
 		  font-size: 1em;
+	  }
+	  
+	  .flip-container, .front, .back {
+		/*  increase height of cards */
+		padding-bottom: 190%;
 	  }
 }
 
