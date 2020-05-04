@@ -145,7 +145,12 @@ export class SocketService {
   getPickedCard() : Observable<string>{
     let observable = new Observable<string>( observer => {
       this.socket.on('serverSendCardPicked', (cardObject) => {
-        observer.next(cardObject.card_text);
+        if (cardObject) {
+          observer.next(cardObject.card_text);
+        }
+        else {
+          observer.next(null);
+        }
       });
       return () => {
         this.disconnectSocket();
