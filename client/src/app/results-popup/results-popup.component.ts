@@ -18,11 +18,9 @@ export class ResultsPopupComponent implements OnInit {
   }
 
   //TODO handle ties
-  parseVoteResults(voteResults: Array<any>) : string {
+  parseVoteResults(voteResults: Array<any>, winner : string) : string {
     var parsedResults = "";
     var reachedArrElements = [];
-    var playerWithMaxVotes = "";
-    var maxVotes = 0;
 
     //sort the names so results display consistantely 
     voteResults.sort((a, b) => (a.name > b.name) ? 1 : -1)
@@ -32,21 +30,16 @@ export class ResultsPopupComponent implements OnInit {
         var numVotes = voteResults.filter((value) => value.name == player.name).length;
         parsedResults += (player.name + " has " + numVotes + " votes! \n");
 
-        if(numVotes > maxVotes) {
-          maxVotes = numVotes;
-          playerWithMaxVotes = player.name;
-        }
-
         reachedArrElements.push(player.name);
       }
     });
 
-    parsedResults += ("\n" + playerWithMaxVotes + " wins the card.\nReveal the results to the other players!");
+    parsedResults += ("\n" + winner + " wins the card.\nReveal the results to the other players!");
     return parsedResults;
   }
-  open(voteResults: Array<any>) : void {
+  open(voteResults: Array<any>, winner: string) : void {
     this.popupIsOpen = true;
-    this.resultsText.nativeElement.textContent = this.parseVoteResults(voteResults);
+    this.resultsText.nativeElement.textContent = this.parseVoteResults(voteResults, winner);
 
   }
   close() : void {
