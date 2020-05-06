@@ -1,6 +1,7 @@
 .card {
     text-align: center;
     white-space: nowrap;
+    margin-bottom: 20px;
 }
 
 .card-body {

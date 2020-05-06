@@ -1,6 +1,6 @@
 <div class = "playerButton">
-    <button type="button" [className]="votingEnabled ? 'btn btn-primary' : 'btn btn-secondary'" (click) = "vote()" #voteButton>
-        <span style="text-align: left">{{player.name}}</span>
-        <span style="text-align: right; padding-left: 10rem;">0</span>
+    <button type="button" id="voteButton" [className]="votingEnabled ? 'btn btn-primary' : 'btn btn-light'" (click) = "vote()" #voteButton>
+        <div id="name">{{player.name}}</div>
+        <div id="score">0</div>
     </button>
 </div>

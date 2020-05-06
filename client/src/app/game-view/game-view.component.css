@@ -8,6 +8,7 @@ html, body {
 }
 .card{
     padding: 10px;
+    padding-bottom: 20px;
 }
 .player-space{
     /* margin-top: 10px; */
@@ -18,7 +19,21 @@ html, body {
     padding-top: 20px;
 }
 
-app-player-block {
+#no-players {
+    text-align: center;
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+#room-code {
+    margin-top: 20px;
+    text-align: center;
+}
+
+#code {
+    font-family: 'Roboto Mono', monospace;
+}
+/* app-player-block {
     max-width: 45%;
     display: inline;
 }
@@ -27,7 +42,7 @@ app-player-block {
     app-player-block {
         max-width: 90%;
     }
-}
+} */
 
 @media screen and (max-width: 768px) {
     .card-col{

@@ -3,15 +3,29 @@ button{
 }
 .playerButton{
     padding-top: 10px;
-    padding-left: 10px;
-    padding-right: 10px;
-    text-align: center;
     font-size: 15px;
+}
+
+#voteButton {
+    text-align: left;
+    display: inline-block;
+}
+
+#name {
+    float: left;
+}
+
+#score {
+    float: right;
 }
 
 @media screen and (max-width: 768px)
 {
     .playerButton{
         font-size: 12px;
+    }
+    #score {
+        display: block;
+        float: none;
     }
 }
