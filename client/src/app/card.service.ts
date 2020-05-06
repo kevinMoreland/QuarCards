@@ -22,8 +22,8 @@ export class CardService {
     return this.http.get<Card>(`${this.hostName}/api/cardByNum/` + cardNum);
   }
 
-  getRandomCard(): Observable<Card> {
-    return this.http.get<Card>(`${this.hostName}/api/randomCard/${this.socketService.connectedRoom}`);
+  getThreeCards(): Observable<Card[]> {
+    return this.http.get<Card[]>(`${this.hostName}/api/threeCards/${this.socketService.connectedRoom}`);
   }
 
 }

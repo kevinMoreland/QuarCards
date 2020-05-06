@@ -19,10 +19,10 @@ export class PlayingCardComponent implements OnInit {
   @Input() currMode : cardMode;
   @Input() votingPhraseText : string;
   @Input() numPlayers : number;
+  @Input() cardData : Card;
   @ViewChild("cardBackText", {read: ElementRef}) cardText: ElementRef;
   @ViewChild("cardFlipper", {read: ElementRef}) card: ElementRef;
   @ViewChild("choiceButton", {read: ElementRef}) choiceButton: ElementRef;
-  cardData : Card = new Card(null);
 
   cardFlipTime : number = 600;
   testCard : Card;
@@ -35,23 +35,23 @@ export class PlayingCardComponent implements OnInit {
   }
   ngAfterViewInit(): void {
     //this is in ngAfterViewInit because the card ElementRef must first be loaded
-    if (this.currMode != cardMode.myTurn) {
-      console.log('here');
+    // I think really only the second conditional is necessary, but the other 
+    // conditionals guard against bad async behavior
+    if (this.currMode === undefined) {
+      this.cardText.nativeElement.textContent = "Loading..."
+    }
+    else if (this.currMode as cardMode !== cardMode.myTurn as cardMode) {
       this.transitionToNewMode();
     }
     else {
-      console.log('afterviewinit')
-      this.cardService.getRandomCard().subscribe( (cData) => {
-        console.log('card stuff');
-        this.cardData = cData;
-        this.cardText.nativeElement.textContent = cData.card_text;
-      });
+      this.cardText.nativeElement.textContent = this.cardData.card_text;
     }
   }
 
   //when the mode changes (players turn to pick card or vote  ), notify the card so it can transition to the new mode
   ngOnChanges(changes : SimpleChanges): void{
-    if(changes.currMode) {
+    if(this.currMode !== undefined && changes.currMode) {
+      console.log(`new mode: ${this.currMode}`);
       this.transitionToNewMode();
     }
   }
@@ -85,17 +85,9 @@ export class PlayingCardComponent implements OnInit {
           break;
         }
         case cardMode.myTurn: {
-          console.log('my turn');
           this.cardText.nativeElement.textContent = "";
           this.transitionCardToFace("back");
-          
-          //TODO: randomly select a card
-          this.cardService.getRandomCard().subscribe( (cData) => {
-            console.log('card stuff');
-            this.cardData = cData;
-            this.cardText.nativeElement.textContent = cData.card_text;
-          });
-          this.cardText.nativeElement.textContent = "randomly selected card text";
+          this.cardText.nativeElement.textContent = this.cardData.card_text;
           break;
         }
       }
@@ -117,11 +109,11 @@ export class PlayingCardComponent implements OnInit {
   //flip a card over to the desired face side
   transitionCardToFace(face : String) : void {
     let cardIsOnFace : Boolean = this.card.nativeElement.classList.contains('flip');
-    console.log(cardIsOnFace);
     
     //switch statement on which card face we would like to end up at after some fancy flipping
     switch(face){
       case("front"): {
+        console.log('to front');
         if(cardIsOnFace) {
           setTimeout(() => this.card.nativeElement.classList.toggle('flip'), this.cardFlipTime);
           this.card.nativeElement.classList.toggle('flip');
@@ -132,12 +124,10 @@ export class PlayingCardComponent implements OnInit {
       // NOTE: setTimeout is an asynchronous function, so toggling nativeElement outside of
       // a setTimeout will always execute faster regardless of position in code
       case("back"): {
-        if(!cardIsOnFace) {
-          console.log('here');
-          setTimeout(() => this.card.nativeElement.classList.toggle('flip'), this.cardFlipTime);
+        console.log('to back');
+        if(cardIsOnFace) {
           this.card.nativeElement.classList.toggle('flip');
         }
-        else { this.card.nativeElement.classList.toggle('flip'); }
         break;
       }
     }
@@ -150,9 +140,8 @@ export class PlayingCardComponent implements OnInit {
   }
 
   onCardPicked() : void {
-    console.log(this.numPlayers);
     if (this.numPlayers > 0) {
-      console.log("card picked: " + this.cardText.nativeElement.textContent);
+      //console.log("card picked: " + this.cardText.nativeElement.textContent);
       this.socketService.pickCard(this.cardData);
     }
     else {
