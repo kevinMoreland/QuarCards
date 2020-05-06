@@ -11,6 +11,10 @@ export class LobbyService {
   constructor(private http : HttpClient) { }
 
   checkRoom(lobbyCode: string) : Observable<any> {
-    return this.http.post(`${this.hostname}/checkRoom`, {'code' : lobbyCode}, {responseType: 'text'});
+    return this.http.get(`${this.hostname}/api/checkRoom/${lobbyCode}`, {responseType: 'text'});
+  }
+
+  checkName(lobbyCode: string, username: string) : Observable<any> {
+    return this.http.get(`${this.hostname}/api/checkUser/${lobbyCode}/${username}`, {responseType: 'text'});
   }
 }

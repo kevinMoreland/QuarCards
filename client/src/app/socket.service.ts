@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import * as io from 'socket.io-client';
 import { Observable } from 'rxjs';
+import Card from 'src/entity/Card';
 
 @Injectable({
   providedIn: 'root'
@@ -136,15 +137,20 @@ export class SocketService {
   }
 
   //signal to the server that a card was picked
-  pickCard(cardText : string) : void {
-    this.socket.emit('clientPickedCard', this.connectedRoom, cardText);
+  pickCard(card : Card) : void {
+    this.socket.emit('clientPickedCard', this.connectedRoom, card);
   }
 
   //wait for the card picked by player with the turn
   getPickedCard() : Observable<string>{
     let observable = new Observable<string>( observer => {
-      this.socket.on('serverSendCardPicked', (cardText) => {
-        observer.next(cardText);
+      this.socket.on('serverSendCardPicked', (cardObject) => {
+        if (cardObject) {
+          observer.next(cardObject.card_text);
+        }
+        else {
+          observer.next(null);
+        }
       });
       return () => {
         this.disconnectSocket();

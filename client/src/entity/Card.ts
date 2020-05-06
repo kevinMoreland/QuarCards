@@ -1,7 +1,7 @@
 export default class Card {
     _id?: string;
     card_text: string;
-    card_num: string;
+    card_num: number;
 
     constructor(json: any) {
         if (json) {
@@ -11,9 +11,9 @@ export default class Card {
             
         }
         else {
-            this._id = null;
+            this._id = '';
             this.card_text = '';
-            this.card_num = null;
+            this.card_num = -1;
         }
     }
 }
