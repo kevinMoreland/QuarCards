@@ -63,7 +63,7 @@ function clearVotingInfo() {
 }
 function determineVoteWinner(voteResults) {
     var reachedArrElements = [];
-    var playerWithMaxVotes = "";
+    var playerWithMaxVotes = voteResults[0];
     var maxVotes = 0;
 
     voteResults.forEach(function (player) {
@@ -72,7 +72,7 @@ function determineVoteWinner(voteResults) {
 
             if(numVotes > maxVotes) {
                 maxVotes = numVotes;
-                playerWithMaxVotes = player.name;
+                playerWithMaxVotes = player;
             }
 
             reachedArrElements.push(player.name);
@@ -247,7 +247,7 @@ io.on('connection', function(socket) {
     });
 
     //recieve votes, send them to the current game host when fully collected
-    socket.on('clientSendVote', function(code, playerVotedFor, votingPlayer) {
+    socket.on('clientSendVote', function(code, playerVotedFor, cardVotingOn, votingPlayer) {
         voteResults.push(playerVotedFor);
         playersWhoVoted.push(votingPlayer);
 
@@ -255,8 +255,16 @@ io.on('connection', function(socket) {
         console.log("numvotes: " + voteResults.length);
         if(voteResults.length >= numVotingPlayers){
             console.log("sending vote results...");
+
+            //give card to whoever was voted for
             var voteWinner = determineVoteWinner(voteResults);
+            sessions[roomCode].playerQueue.givePlayerCard(cardVotingOn, voteWinner.Id);
+
             io.to(code).emit('serverSendVoteResults', voteResults, voteWinner);
+            
+            //update player list so votes update
+            var playerList = sessions[roomCode].playerQueue.asArray();
+            io.to(code).emit('serverUpdatePlayerList', playerList);
         }
     });
 

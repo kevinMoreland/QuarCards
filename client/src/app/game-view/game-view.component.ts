@@ -17,6 +17,7 @@ import { AlertPopupComponent } from '../alert-popup/alert-popup.component';
 export class GameViewComponent implements OnInit {
   browserRefresh: boolean;
   @Output() currMode : cardMode;
+
   @ViewChild(ResultsPopupComponent) resultsPopup: ResultsPopupComponent;
   @ViewChild(AlertPopupComponent) alertPopup: AlertPopupComponent;
 
@@ -37,6 +38,7 @@ export class GameViewComponent implements OnInit {
   roundIsCancelledSubscription: Subscription;
 
   playerList: Array<any>;
+  myCards: Array<string>;
 
   constructor( private socketService: SocketService,
     private router: Router) {}
@@ -57,6 +59,8 @@ export class GameViewComponent implements OnInit {
     //initialize list of players
     this.playerList = this.socketService.allOtherPlayersOnStart;
     this.firstPlayer = this.isTurn && this.playerList.length == 0;
+
+    this.myCards = [];
 
     this.initCardMode();
     this.initTurnSubscription();
@@ -87,7 +91,7 @@ export class GameViewComponent implements OnInit {
     this.voteResultsSubscription = this.socketService.getVoteResults().subscribe((results) => {
       var overallResults = results[0];
       var winner = results[1];
-      
+
       if(this.isTurn) {
         this.resultsPopup.open(overallResults, winner);
       }

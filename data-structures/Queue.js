@@ -11,6 +11,15 @@ function Queue(){
     this.getLength=function(){return a.length};
     this.isEmpty=function(){return 0==a.length};
     this.enqueue=function(b){a.push(b)};
+    this.givePlayerCard=function(cardText,playerId){
+        let i = 0;
+        while(i < a.length) {
+            if(a[i].Id == playerId){
+                a[i].votes.push(cardText);
+            }
+            i+=1;
+        }
+    }
     this.containsPlayer=function(player){
         var i = a.findIndex(function(arrVal){return arrVal.Id == player.Id});
         return i >= 0;

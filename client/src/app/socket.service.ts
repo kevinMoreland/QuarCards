@@ -169,13 +169,26 @@ export class SocketService {
     return observable;
   }
 
+  getMyCards() : Observable<Array<any>>{
+    let observable = new Observable<Array<any>>( observer => {
+      this.socket.on('serverSendUpdatedCards', (cards) => {
+
+        observer.next(cards);
+      });
+      return () => {
+        this.disconnectSocket();
+      };
+    });
+
+    return observable;
+  }
+
   revealVoteResults(results : Array<any>) : void {
     this.socket.emit('revealVoteResults', this.connectedRoom, results);
   }
 
-  submitVote(playerVotedFor) : void{
-    console.log("in socket service, got player as " + playerVotedFor.Id +", " + playerVotedFor.name);
-    this.socket.emit('clientSendVote', this.connectedRoom, playerVotedFor, this.socket.id);
+  submitVote(playerVotedFor, cardVotingOn : String) : void{
+    this.socket.emit('clientSendVote', this.connectedRoom, playerVotedFor, cardVotingOn, this.socket.id);
   }
 
   //get the list of all players excluding current player
