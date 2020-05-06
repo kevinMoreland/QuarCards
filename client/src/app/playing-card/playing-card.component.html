@@ -1,11 +1,11 @@
 <div class="flip-container w-100 h-100"  #cardFlipper (click) = onCardClick(cardFlipper)>
 	<div class="flipper">
 		<div class="front">
-			<p>Flip me !</p>
+			<p class="text-light">Flip me !</p>
 		</div>
 		<div class="back">
-			<p #cardBackText>Back text</p>
-			<button class="choiceButton btn btn-dark" #choiceButton (click) = "onCardPicked()">Pick me!</button>
+			<p #cardBackText class="text-dark">Back text</p>
+			<button class="choiceButton btn btn-dark text-light" #choiceButton (click) = "onCardPicked()">Pick me!</button>
 		</div>
 	</div>
 </div>

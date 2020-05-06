@@ -37,7 +37,8 @@
 
 .front p{
 	font-size: 45px;
-	padding-top: 50%;	
+	padding-top: 50%;
+	font-family: 'Special Elite', cursive;
 }
 
 .choiceButton {
@@ -78,8 +79,8 @@
 	/* for firefox 31 */
   transform: rotateY(0deg);
   background-color: black;
-  color: whitesmoke;
-  border: 1px solid white;
+  color: f8f9fa;
+  border: 1px solid f8f9fa;
   border-radius: 8px;
 }
 
@@ -88,9 +89,9 @@
 	/* z-index: 2; */
 	z-index: -1;
   transform: rotateY(180deg);
-  background-color: whitesmoke;
+  background-color: f8f9fa;
   color: #050505;
-  border: 1px solid black;
+  border: 1px solid #050505;
   border-radius: 8px;
 }
 

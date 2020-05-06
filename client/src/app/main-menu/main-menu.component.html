@@ -1,17 +1,17 @@
 <div class = "container">
   <div class="row">
     <div class="col">
-      <h1>Quarantine Cards.</h1>
+      <h1 class="text-light">Quarantine Cards.</h1>
     </div>
   </div>
   <div class="row" *ngIf="!this.showNameField">
     <div class="col">
-      <button type="button" class="btn btn-lg btn-primary buttonPadding" id="startGameButton" (click)="onStartGame()">Start a new game!</button>
+      <button type="button" class="btn btn-lg btn-primary buttonPadding text-light" id="startGameButton" (click)="onStartGame()">Start a new game!</button>
     </div>
   </div>
   <div class="row" *ngIf="!this.showNameField">
     <div class="col">
-      <h2 class="separator">OR</h2>
+      <h2 class="separator text-light">OR</h2>
     </div>
   </div>
   <!-- ROOM CODE FIELD -->
@@ -23,7 +23,7 @@
   </div>
   <div class="row" *ngIf="!this.showNameField">
     <div class="col">
-      <button type="button" class="btn btn-lg btn-info joinForm buttonPadding" id="joinButton" (click)="onJoinGame()">Join your friend's game!</button>
+      <button type="button" class="btn btn-lg btn-info text-light joinForm buttonPadding" id="joinButton" (click)="onJoinGame()">Join your friend's game!</button>
     </div>
   </div>
 
@@ -39,7 +39,7 @@
   </div>
   <div class="row" *ngIf="this.showNameField">
     <div class="col">
-      <button type="button" class="btn btn-lg btn-success joinForm buttonPadding" id="joinButton" (click)="onEnterName()">Enter game</button>
+      <button type="button" class="btn btn-lg btn-success text-light joinForm buttonPadding" id="joinButton" (click)="onEnterName()">Enter game</button>
     </div>
   </div>
 </div>

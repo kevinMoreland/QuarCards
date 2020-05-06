@@ -15,16 +15,11 @@ h1 {
     font-size: 5rem;
     padding-top: 10rem;
     padding-bottom: 4rem;
-    /* font-family: 'Source Code Pro', monospace; */
-    color: white;
+    font-family: 'Special Elite', cursive;
 }
 
-h2 {
-    color: white;
-}
-
-h3 {
-    color: white;
+h2, h3 {
+    font-family: 'Special Elite', cursive;
 }
 
 #noRoom {
