@@ -34,7 +34,7 @@
     <h6 *ngIf="emptyName" class="invalid">Name cannot be empty!</h6>
     <h6 *ngIf="invalidName" class="invalid">Looks like your friend is already using that name.</h6>
     <h6 *ngIf="invalidName" class="invalid">Try adding some or all letters of your last name!</h6>
-      <input type="text" class="form-control-lg joinForm" id="codeInput" [(ngModel)]="name" aria-label="Username" aria-describedby="basic-addon1">
+      <input type="text" class="form-control-lg joinForm" id="nameInput" [(ngModel)]="name" aria-label="Username" aria-describedby="basic-addon1">
     </div>
   </div>
   <div class="row" *ngIf="this.showNameField">
