@@ -258,16 +258,16 @@ io.on('connection', function(socket) {
 
             //give card to whoever was voted for
             var voteWinner = determineVoteWinner(voteResults);
-            sessions[roomCode].playerQueue.givePlayerCard(cardVotingOn, voteWinner.Id);
+            sessions[code].playerQueue.givePlayerCard(cardVotingOn, voteWinner.Id);
 
             io.to(code).emit('serverSendVoteResults', voteResults, voteWinner);
             
             //update player list so votes update
-            var playerList = sessions[roomCode].playerQueue.asArray();
+            var playerList = sessions[code].playerQueue.asArray();
             io.to(code).emit('serverUpdatePlayerList', playerList);
 
             //alert winner that they have a new card
-            io.to(voteWinner.Id).emit('serverSendUpdatedCards', sessions[roomCode].playerQueue.getPlayerCards(voteWinner.Id));
+            io.to(voteWinner.Id).emit('serverSendUpdatedCards', sessions[code].playerQueue.getPlayerCards(voteWinner.Id));
         }
     });
 
