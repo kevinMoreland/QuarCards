@@ -38,7 +38,6 @@ export class GameViewComponent implements OnInit {
   roundIsCancelledSubscription: Subscription;
 
   playerList: Array<any>;
-  myCards: Array<string>;
 
   constructor( private socketService: SocketService,
     private router: Router) {}
@@ -59,8 +58,6 @@ export class GameViewComponent implements OnInit {
     //initialize list of players
     this.playerList = this.socketService.allOtherPlayersOnStart;
     this.firstPlayer = this.isTurn && this.playerList.length == 0;
-
-    this.myCards = [];
 
     this.initCardMode();
     this.initTurnSubscription();

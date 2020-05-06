@@ -18,7 +18,7 @@ export class ResultsPopupComponent implements OnInit {
   }
 
   //TODO handle ties
-  parseVoteResults(voteResults: Array<any>, winner : string) : string {
+  parseVoteResults(voteResults: Array<any>, winner : any) : string {
     var parsedResults = "";
     var reachedArrElements = [];
 
@@ -34,7 +34,7 @@ export class ResultsPopupComponent implements OnInit {
       }
     });
 
-    parsedResults += ("\n" + winner + " wins the card.\nReveal the results to the other players!");
+    parsedResults += ("\n" + winner.name + " wins the card.\nReveal the results to the other players!");
     return parsedResults;
   }
   open(voteResults: Array<any>, winner: string) : void {

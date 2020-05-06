@@ -265,6 +265,9 @@ io.on('connection', function(socket) {
             //update player list so votes update
             var playerList = sessions[roomCode].playerQueue.asArray();
             io.to(code).emit('serverUpdatePlayerList', playerList);
+
+            //alert winner that they have a new card
+            io.to(voteWinner.Id).emit('serverSendUpdatedCards', sessions[roomCode].playerQueue.getPlayerCards(voteWinner.Id));
         }
     });
 

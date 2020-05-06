@@ -20,6 +20,16 @@ function Queue(){
             i+=1;
         }
     }
+    this.getPlayerCards=function(playerId){
+        let i = 0;
+        while(i < a.length) {
+            if(a[i].Id == playerId){
+                return a[i].votes;
+            }
+            i+=1;
+        }
+        return [];
+    }
     this.containsPlayer=function(player){
         var i = a.findIndex(function(arrVal){return arrVal.Id == player.Id});
         return i >= 0;
