@@ -39,9 +39,12 @@
 	font-size: 45px;
 	padding-top: 50%;	
 }
-#cardChoiceButton{
-	font-size: 5px;
+
+.choiceButton {
+	padding: 2% 2%;
+	font-size: 1.4em;
 }
+
 .back p{
 	font-size: 25px;
 	padding-top: 20%;
@@ -58,9 +61,10 @@
 		font-size: 12px;
 		padding-top: 20%;
 	  }
-	  #cardChoiceButton{
-		  font-size: 12px;
+	  .choiceButton {
+		  font-size: 1em;
 	  }
+	  
 	  .flip-container, .front, .back {
 		/*  increase height of cards */
 		padding-bottom: 190%;
@@ -70,17 +74,24 @@
 /* front pane, placed above back */
 .front {
 	z-index: 2;
+	/* z-index: -1; */
 	/* for firefox 31 */
   transform: rotateY(0deg);
   background-color: black;
   color: whitesmoke;
+  border: 1px solid white;
+  border-radius: 8px;
 }
 
 /* back, initially hidden pane */
 .back {
+	/* z-index: 2; */
+	z-index: -1;
   transform: rotateY(180deg);
   background-color: whitesmoke;
   color: #050505;
+  border: 1px solid black;
+  border-radius: 8px;
 }
 
 .choiceButton.disabled {

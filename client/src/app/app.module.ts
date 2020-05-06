@@ -14,7 +14,8 @@ import { MyCardsComponent } from './my-cards/my-cards.component';
 import { HttpClientModule } from '@angular/common/http';
 import { ChatComponent } from './chat/chat.component';
 import { ResultsPopupComponent } from './results-popup/results-popup.component';
-import { AlertPopupComponent } from './alert-popup/alert-popup.component'; 
+import { AlertPopupComponent } from './alert-popup/alert-popup.component';
+import { RoomCodeComponent } from './room-code/room-code.component'; 
 
 const appRoutes: Routes = [
   { path: 'game', component: GameViewComponent },
@@ -35,6 +36,7 @@ const appRoutes: Routes = [
     ChatComponent,
     ResultsPopupComponent,
     AlertPopupComponent,
+    RoomCodeComponent,
   ],
   imports: [
     BrowserModule,

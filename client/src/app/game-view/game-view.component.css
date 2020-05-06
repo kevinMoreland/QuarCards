@@ -9,16 +9,27 @@ html, body {
 .card{
     padding: 10px;
 }
-#players{
-    padding-bottom: 20px;
+.player-space{
+    /* margin-top: 10px; */
+    margin-bottom: 20px;
 }
 
 #mycards{
     padding-top: 20px;
 }
 
-@media screen and (max-width: 768px)
-{
+app-player-block {
+    max-width: 45%;
+    display: inline;
+}
+
+@media (max-width: 500px) {
+    app-player-block {
+        max-width: 90%;
+    }
+}
+
+@media screen and (max-width: 768px) {
     .card-col{
         /*increases width of cards and their closeness*/
         padding-left: 2px;

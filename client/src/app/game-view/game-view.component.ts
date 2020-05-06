@@ -8,6 +8,8 @@ import { browserRefresh } from '../app.component';
 import { cardMode } from '../../entity/data-structures/card-modes';
 import { ResultsPopupComponent } from '../results-popup/results-popup.component';
 import { AlertPopupComponent } from '../alert-popup/alert-popup.component';
+import Card from 'src/entity/Card';
+import { CardService } from '../card.service';
 
 @Component({
   selector: 'app-game-view',
@@ -20,6 +22,9 @@ export class GameViewComponent implements OnInit {
 
   @ViewChild(ResultsPopupComponent) resultsPopup: ResultsPopupComponent;
   @ViewChild(AlertPopupComponent) alertPopup: AlertPopupComponent;
+  card1 : Card = new Card(null);
+  card2 : Card = new Card(null);
+  card3 : Card = new Card(null);
 
   isTurn : boolean;
   firstPlayer : boolean;
@@ -40,6 +45,7 @@ export class GameViewComponent implements OnInit {
   playerList: Array<any>;
 
   constructor( private socketService: SocketService,
+    private cardService: CardService,
     private router: Router) {}
 
   ngOnInit(): void {
@@ -140,7 +146,14 @@ export class GameViewComponent implements OnInit {
     this.isTurnSubscription = this.socketService.getIsTurn().subscribe( (isTurn) => {
       this.isTurn = isTurn;
       if(isTurn) {
-        this.currMode = cardMode.myTurn;
+        this.cardService.getThreeCards().subscribe( cardArray => {
+          this.card1 = cardArray[0];
+          this.card2 = cardArray[1];
+          this.card3 = cardArray[2];
+          this.currMode = cardMode.myTurn;
+        }, err => {
+          console.log(err);
+        });
       }
       else {
         this.currMode = cardMode.waiting;
@@ -152,7 +165,6 @@ export class GameViewComponent implements OnInit {
     this.routingSubscription = this.router.events.subscribe( event => {
       if (event instanceof NavigationStart ) {
         this.socketService.disconnectSocket();
-        console.log('here');
       }
     });
   }
@@ -160,7 +172,14 @@ export class GameViewComponent implements OnInit {
   initCardMode() : void {
     //initially, get card mode and list of players other than current player
     if(this.socketService.isTurnOnStart) {
-      this.currMode = cardMode.myTurn;
+      this.cardService.getThreeCards().subscribe( cardArray => {
+        this.card1 = cardArray[0];
+        this.card2 = cardArray[1];
+        this.card3 = cardArray[2];
+        this.currMode = cardMode.myTurn;
+      }, err => {
+        console.log(err);
+      });
     }
     else {
       this.currMode = cardMode.waiting;
@@ -169,6 +188,10 @@ export class GameViewComponent implements OnInit {
   
   onVoted(): void {
     this.currMode = cardMode.waiting;
+  }
+
+  getRoomCode(): string {
+    return this.socketService.connectedRoom;
   }
 
   ngOnDestroy(): void {

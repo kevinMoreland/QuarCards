@@ -14,9 +14,11 @@ export class MainMenuComponent implements OnInit {
   lobbyCode: string;
   isConnectedSubscription: Subscription;
   showNameField: boolean;
+  emptyName: boolean = false;
+  invalidName: boolean = false;
   joiningGame: boolean;
   invalidRoom: boolean;
-  name: String;
+  name: string = '';
 
   constructor( private socketService: SocketService,
     private router: Router,
@@ -37,8 +39,6 @@ export class MainMenuComponent implements OnInit {
   onJoinGame() {
     console.log(this.lobbyCode);
     this.lobbyService.checkRoom(this.lobbyCode).subscribe(res => {
-      console.log(res);
-      console.log("here");
       this.joiningGame = true;
       this.invalidRoom = false;
       this.showNameField = true;
@@ -53,13 +53,34 @@ export class MainMenuComponent implements OnInit {
   }
 
   onEnterName() {
-    this.onConnectGoToGame();
-    if (this.joiningGame) {
-      this.socketService.joinExistingRoom(this.lobbyCode, this.name);
+    // check empty names
+    console.log(this.name);
+    if (this.name === '') {
+      this.emptyName = true;
+      this.invalidName = false;
+      return;
     }
     else {
-      this.socketService.joinNewRoom(this.name);
+      this.emptyName = false;
     }
+    console.log('before');
+    this.lobbyService.checkName(this.lobbyCode, this.name).subscribe( res => {
+      console.log('yis');
+      this.onConnectGoToGame();
+      if (this.joiningGame) {
+        this.socketService.joinExistingRoom(this.lobbyCode, this.name);
+      }
+      else {
+        this.socketService.joinNewRoom(this.name);
+      }
+    }, err => {
+      console.log(err);
+      if (err instanceof HttpErrorResponse) {
+        if (err.status == 401) {
+          this.invalidName = true;
+        }
+      }
+    })
   }
 
   onConnectGoToGame(){

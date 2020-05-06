@@ -1,3 +1,4 @@
 #resultsModal {
-    white-space: pre-wrap
+    white-space: pre-wrap;
+    background: rgba(91, 91, 91, 0.70);
 }

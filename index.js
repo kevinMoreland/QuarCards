@@ -12,6 +12,8 @@ const Queue = require('./data-structures/Queue');
 const SessionData = require('./data-structures/SessionData');
 const Player = require('./data-structures/Player');
 
+const Card = require('./models/cards.js');
+
 
 //socket stuff
 var io = require('socket.io')(http);
@@ -19,7 +21,9 @@ const port = process.env.PORT || 3000;
 
 const buildDirectory = '/client/dist/client';
 
-var sessions = {};
+// take out var to make it global
+sessions = {};
+numCards = 91;
 
 var numVotingPlayers = 0;
 var voteResults = [];
@@ -97,25 +101,6 @@ app.use(bodyparser.json());
 
 //routes
 app.use('/api', route);
-
-app.post('/checkRoom', async (req, res) => {
-    console.log('**checking room**');
-    roomCode = req.body.code;
-    if (!roomCode) {
-        res.sendStatus(401);
-        return;
-    }
-    else {
-        roomCode = roomCode.toUpperCase();
-    }
-    if (sessions[roomCode]) {
-        console.log("found!");
-        res.sendStatus(200);
-    }
-    else {
-        res.sendStatus(401);
-    }
-});
 
 io.on('connection', function(socket) {
     console.log(`user ${socket.id} has connected`);
@@ -236,14 +221,29 @@ io.on('connection', function(socket) {
         }
     });
 
-    //send the picked card to everyone in the room
+    // send the picked card to everyone in the room
+    // must handle null case for choices with empty lobbies
     socket.on('clientPickedCard', function(code, card) {
-        clearVotingInfo();
-
-        //set number of voting players to all players minus player picking card
-        numVotingPlayers = sessions[code].playerQueue.getLength() - 1;
-        console.log("num Players voting: " + numVotingPlayers);
-        io.to(code).emit('serverSendCardPicked', card);
+        console.log(card);
+        if (card) {
+            givenCards = sessions[code.toUpperCase()].turnCards;
+            for (var cNum of givenCards) {
+                if (cNum != card.card_num) {
+                    sessions[code.toUpperCase()].activeCards.push(cNum);
+                }
+            }
+            sessions[code.toUpperCase()].turnCards = [];
+            console.log(sessions);
+            //clear old voting results
+            clearVotingInfo();
+            //set number of voting players to all players minus player picking card
+            numVotingPlayers = sessions[code].playerQueue.getLength() - 1;
+            console.log("num Players voting: " + numVotingPlayers);
+            io.to(code).emit('serverSendCardPicked', card);
+        }
+        else {
+            io.to(code).emit('serverSendCardPicked', null);
+        }
     });
 
     //recieve votes, send them to the current game host when fully collected
@@ -269,6 +269,12 @@ io.on('connection', function(socket) {
             //alert winner that they have a new card
             io.to(voteWinner.Id).emit('serverSendUpdatedCards', sessions[roomCode].playerQueue.getPlayerCards(voteWinner.Id));
         }
+    });
+
+    socket.on('clientRequestCard', async function() {
+        var card = await Card.findOne({'card_num' : 1});
+        console.log('sending');
+        io.to(socket.id).emit('serverSendRequestedCard', card);
     });
 
 });
