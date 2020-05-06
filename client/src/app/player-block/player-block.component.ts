@@ -10,6 +10,7 @@ import { cardMode } from '../../entity/data-structures/card-modes';
 export class PlayerBlockComponent implements OnInit {
   @Input() player: any;
   @Input() currMode: cardMode;
+  @Input() cardVotingOn: string;
   @Output() voted = new EventEmitter();
   @ViewChild("voteButton", {read: ElementRef}) voteButton: ElementRef;
 
@@ -47,7 +48,7 @@ export class PlayerBlockComponent implements OnInit {
 
   vote() : void {
     if(this.votingEnabled) {
-      this.socketService.submitVote(this.player);
+      this.socketService.submitVote(this.player, this.cardVotingOn);
 
       //after emitting the vote event, gameview will change currMode to waiting, and disable voting buttons
       this.voted.emit(true);

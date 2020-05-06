@@ -65,6 +65,25 @@ function clearVotingInfo() {
     voteResults = [];
     playersWhoVoted = [];
 }
+function determineVoteWinner(voteResults) {
+    var reachedArrElements = [];
+    var playerWithMaxVotes = voteResults[0];
+    var maxVotes = 0;
+
+    voteResults.forEach(function (player) {
+        if(!reachedArrElements.includes(player.name)){
+            var numVotes = voteResults.filter((value) => value.name == player.name).length;
+
+            if(numVotes > maxVotes) {
+                maxVotes = numVotes;
+                playerWithMaxVotes = player;
+            }
+
+            reachedArrElements.push(player.name);
+        }
+    });
+    return playerWithMaxVotes;
+}
 
 if (process.argv.includes('--dev')) {
     app.use(cors());
@@ -88,7 +107,7 @@ io.on('connection', function(socket) {
     //console.log(socket.roomCode);
     socket.on('newLobby', function(username) {
         var roomCode = generateCode();
-        var newPlayer = new Player(socket.id, username);
+        var newPlayer = new Player(socket.id, username, []);
 
         //collect all information to create the new session
         var sessionData = new SessionData();
@@ -116,7 +135,7 @@ io.on('connection', function(socket) {
     socket.on('joinLobby', function(code, username) {
         code = code.toUpperCase();
         console.log(code);
-        var newPlayer = new Player(socket.id, username);
+        var newPlayer = new Player(socket.id, username, []);
         if (sessions[code] && !sessions[code].playerQueue.containsPlayer(newPlayer)) {
             sessions[code].playerQueue.enqueue(newPlayer);
             socket.roomCode = code;
@@ -228,7 +247,7 @@ io.on('connection', function(socket) {
     });
 
     //recieve votes, send them to the current game host when fully collected
-    socket.on('clientSendVote', function(code, playerVotedFor, votingPlayer) {
+    socket.on('clientSendVote', function(code, playerVotedFor, cardVotingOn, votingPlayer) {
         voteResults.push(playerVotedFor);
         playersWhoVoted.push(votingPlayer);
 
@@ -236,7 +255,19 @@ io.on('connection', function(socket) {
         console.log("numvotes: " + voteResults.length);
         if(voteResults.length >= numVotingPlayers){
             console.log("sending vote results...");
-            io.to(code).emit('serverSendVoteResults', voteResults);
+
+            //give card to whoever was voted for
+            var voteWinner = determineVoteWinner(voteResults);
+            sessions[code].playerQueue.givePlayerCard(cardVotingOn, voteWinner.Id);
+
+            io.to(code).emit('serverSendVoteResults', voteResults, voteWinner);
+            
+            //update player list so votes update
+            var playerList = sessions[code].playerQueue.asArray();
+            io.to(code).emit('serverUpdatePlayerList', playerList);
+
+            //alert winner that they have a new card
+            io.to(voteWinner.Id).emit('serverSendUpdatedCards', sessions[code].playerQueue.getPlayerCards(voteWinner.Id));
         }
     });
 

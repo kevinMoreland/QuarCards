@@ -3,7 +3,7 @@
     <div class="row player-space justify-content-between">
         <div class="col-8 card">
             <div class="row">
-                <app-player-block class="col" *ngFor="let player of playerList;" [player]="player" [currMode] = "currMode" (voted)="onVoted()"></app-player-block>
+                <app-player-block class="col" *ngFor="let player of playerList;" [player]="player" [currMode] = "currMode" [cardVotingOn] = "votingPhrase" (voted)="onVoted()"></app-player-block>
             </div>
         </div>
         <div class="col-4">
