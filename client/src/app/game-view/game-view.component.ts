@@ -19,6 +19,7 @@ import { CardService } from '../card.service';
 export class GameViewComponent implements OnInit {
   browserRefresh: boolean;
   @Output() currMode : cardMode;
+
   @ViewChild(ResultsPopupComponent) resultsPopup: ResultsPopupComponent;
   @ViewChild(AlertPopupComponent) alertPopup: AlertPopupComponent;
   card1 : Card = new Card(null);
@@ -89,9 +90,13 @@ export class GameViewComponent implements OnInit {
   }
   
   initVoteResultsSubscription() : void {
-    this.voteResultsSubscription = this.socketService.getVoteResults().subscribe((resultsArray) => {
+    //subscription returns an array with overall results at index 0 and the winner as a player's name at index 1
+    this.voteResultsSubscription = this.socketService.getVoteResults().subscribe((results) => {
+      var overallResults = results[0];
+      var winner = results[1];
+
       if(this.isTurn) {
-        this.resultsPopup.open(resultsArray);
+        this.resultsPopup.open(overallResults, winner);
       }
       else {
         this.alertPopup.open("Voting done!", "Wait for this round's card reader to reveal the results with the group");
