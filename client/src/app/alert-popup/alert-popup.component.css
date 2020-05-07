@@ -2,3 +2,9 @@
     white-space: normal;
     background: rgba(91, 91, 91, 0.70);
 }
+button {
+    font-family: 'Special Elite', cursive;
+}
+.modal-title{
+    font-family: 'Special Elite', cursive;
+}

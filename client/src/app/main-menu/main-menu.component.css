@@ -22,6 +22,10 @@ h2, h3 {
     font-family: 'Special Elite', cursive;
 }
 
+button {
+    font-family: 'Special Elite', cursive;
+}
+
 #noRoom {
     color: red;
 }
