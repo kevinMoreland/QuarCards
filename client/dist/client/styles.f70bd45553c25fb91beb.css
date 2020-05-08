@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Fira+Sans&family=Fjalla+One&family=Source+Code+Pro:wght@600&family=Special+Elite&display=swap");*{font-family:Special Elite,cursive}app-root,body,html{background-color:#262626}
+@import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Fira+Sans&family=Fjalla+One&family=Source+Code+Pro:wght@600&family=Special+Elite&display=swap");@import url("https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap");@import url("https://fonts.googleapis.com/css2?family=Roboto+Slab&display=swap");*{font-family:Special Elite,cursive}app-root,body,html{background-color:#343a40}
 /*!
  * Bootstrap v4.4.1 (https://getbootstrap.com/)
  * Copyright 2011-2019 The Bootstrap Authors
