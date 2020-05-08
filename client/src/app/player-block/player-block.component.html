@@ -1,6 +1,17 @@
+<!-- <div class = "playerButton">
+    <button type="button" id="voteButton"
+        [className]="votingEnabled ? 'btn btn-primary' : 'btn btn-light'"
+        (click) = "vote()"
+        #voteButton>
+        <div id="name">{{ player.name }}</div>
+        <div id="score">{{ player.votes.length }}</div>
+</div> -->
+
 <div class = "playerButton">
-    <button type="button" id="voteButton" [className]="votingEnabled ? 'btn btn-primary' : 'btn btn-light'" (click) = "vote()" #voteButton>
-        <div id="name">{{player.name}}</div>
-        <div id="score">0</div>
-    </button>
+    <button type="button" id="voteButton"
+        [className]="votingEnabled ? 'btn btn-primary' : 'btn btn-light'"
+        (click) = "vote()"
+        #voteButton>
+    <div id="name">{{ player.name }}</div>
+    <div id="score">{{ player.votes.length }}</div>
 </div>
