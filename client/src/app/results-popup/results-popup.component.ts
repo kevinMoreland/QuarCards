@@ -18,7 +18,7 @@ export class ResultsPopupComponent implements OnInit {
   }
 
   //TODO handle ties
-  parseVoteResults(voteResults: Array<any>, winner : any) : string {
+  parseVoteResults(voteResults: Array<any>, winner : any, isATie: boolean) : string {
     var parsedResults = "";
     var reachedArrElements = [];
 
@@ -28,18 +28,23 @@ export class ResultsPopupComponent implements OnInit {
     voteResults.forEach(function (player) {
       if(!reachedArrElements.includes(player.name)){
         var numVotes = voteResults.filter((value) => value.name == player.name).length;
-        parsedResults += (player.name + " has " + numVotes + " votes! \n");
+        parsedResults += (player.name + " got " + numVotes + " votes! \n");
 
         reachedArrElements.push(player.name);
       }
     });
-
-    parsedResults += ("\n" + winner.name + " wins the card.\nReveal the results to the other players!");
+    
+    
+    parsedResults += ("\n" + winner.name + " wins the card.");
+    if(isATie) {
+      parsedResults += "\n(we broke the tie by picking who we like the best)";
+    }
+    parsedResults += ("\n\nReveal the results to the other players!");
     return parsedResults;
   }
-  open(voteResults: Array<any>, winner: string) : void {
+  open(voteResults: Array<any>, winner: string, isATie: boolean) : void {
     this.popupIsOpen = true;
-    this.resultsText.nativeElement.textContent = this.parseVoteResults(voteResults, winner);
+    this.resultsText.nativeElement.textContent = this.parseVoteResults(voteResults, winner, isATie);
 
   }
   close() : void {

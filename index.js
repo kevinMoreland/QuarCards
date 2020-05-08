@@ -67,8 +67,10 @@ function clearVotingInfo() {
 }
 function determineVoteWinner(voteResults) {
     var reachedArrElements = [];
+    var tieCheckerArray = [];
     var playerWithMaxVotes = voteResults[0];
-    var maxVotes = 0;
+    var maxVotes = -1;
+    var isATie = false;
 
     voteResults.forEach(function (player) {
         if(!reachedArrElements.includes(player.name)){
@@ -78,11 +80,19 @@ function determineVoteWinner(voteResults) {
                 maxVotes = numVotes;
                 playerWithMaxVotes = player;
             }
-
+            //if there is a tie at the end, tieChecker array will contain a value equal to maxVotes after this loop completes
+            else if(numVotes == maxVotes) {
+                tieCheckerArray.push(numVotes);
+            }
+            
             reachedArrElements.push(player.name);
         }
     });
-    return playerWithMaxVotes;
+
+    if(tieCheckerArray.includes(maxVotes)) {
+        isATie = true;
+    }
+    return [playerWithMaxVotes, isATie];
 }
 
 if (process.argv.includes('--dev')) {
@@ -257,10 +267,15 @@ io.on('connection', function(socket) {
             console.log("sending vote results...");
 
             //give card to whoever was voted for
-            var voteWinner = determineVoteWinner(voteResults);
+
+            //determineVoteWinner returns [(voteWinner: player), (isATie: true/false)]
+            var voteResultsArray = determineVoteWinner(voteResults);
+            var voteWinner = voteResultsArray[0];
+            var isATie = voteResultsArray[1];
+
             sessions[code].playerQueue.givePlayerCard(cardVotingOn, voteWinner.Id);
 
-            io.to(code).emit('serverSendVoteResults', voteResults, voteWinner);
+            io.to(code).emit('serverSendVoteResults', voteResults, voteWinner, isATie);
             
             //update player list so votes update
             var playerList = sessions[code].playerQueue.asArray();

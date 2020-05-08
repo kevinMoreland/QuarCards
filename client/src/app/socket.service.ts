@@ -163,9 +163,9 @@ export class SocketService {
   //wait for the voting results for the round
   getVoteResults() : Observable<Array<any>>{
     let observable = new Observable<Array<any>>( observer => {
-      this.socket.on('serverSendVoteResults', (results, winner) => {
+      this.socket.on('serverSendVoteResults', (results, winner, isATie) => {
 
-        observer.next([results, winner]);
+        observer.next([results, winner, isATie]);
       });
       return () => {
         this.disconnectSocket();

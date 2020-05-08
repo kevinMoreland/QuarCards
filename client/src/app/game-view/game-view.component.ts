@@ -94,9 +94,10 @@ export class GameViewComponent implements OnInit {
     this.voteResultsSubscription = this.socketService.getVoteResults().subscribe((results) => {
       var overallResults = results[0];
       var winner = results[1];
+      var isATie = results[2];
 
       if(this.isTurn) {
-        this.resultsPopup.open(overallResults, winner);
+        this.resultsPopup.open(overallResults, winner, isATie);
       }
       else {
         this.alertPopup.open("Voting done!", "Wait for this round's card reader to reveal the results with the group");
