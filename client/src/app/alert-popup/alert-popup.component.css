@@ -2,3 +2,6 @@
     white-space: normal;
     background: rgba(91, 91, 91, 0.70);
 }
+.modal-body p{
+    font-family: 'Roboto Slab', serif;
+}

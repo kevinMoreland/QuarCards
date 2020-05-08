@@ -2,6 +2,7 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Fira+Sans&family=Fjalla+One&family=Source+Code+Pro:wght@600&family=Special+Elite&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Slab&display=swap');
 
 * {
     /* font-family: 'Fira Sans', sans-serif; */
@@ -12,9 +13,9 @@
 }
 
 html, body {
-    background-color: #262626;
+    background-color: #343a40;
 }
 
 app-root {
-    background-color: #262626;
+    background-color: #343a40;
 }

@@ -3,7 +3,13 @@ button {
 }
 
 .card-header {
-   background-color: #1f1f1f;
+   background-color: #343a40;
+}
+.card-body {
+    background-color: whitesmoke;
+}
+.card-body p{
+    font-family: 'Roboto Slab', serif;
 }
 
 #myCards {

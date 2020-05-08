@@ -48,6 +48,7 @@
 .back p{
 	font-size: 25px;
 	padding-top: 20%;
+	font-family: 'Roboto Slab', serif;
 }
 
 @media screen and (max-width: 768px)
@@ -77,7 +78,7 @@
 	/* z-index: -1; */
 	/* for firefox 31 */
   transform: rotateY(0deg);
-  background-color: #262626;
+  background-color: #141414;
   color: whitesmoke;
   border: 1px solid white;
   border-radius: 8px;
@@ -89,8 +90,8 @@
 	z-index: -1;
   transform: rotateY(180deg);
   background-color: whitesmoke;
-  color: #050505;
-  border: 1px solid black;
+  color: #141414;
+  border: 1px solid #141414;
   border-radius: 8px;
 }
 
