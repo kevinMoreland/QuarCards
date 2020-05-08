@@ -10,10 +10,16 @@ export class ResultsPopupComponent implements OnInit {
   @ViewChild("resultsText", {read: ElementRef}) resultsText: ElementRef;
 
   popupIsOpen : boolean;
+  voteWinner : any;
+  cardToSend : string;
+  tiedWinners : Array<any>;
+  isAtie : boolean;
 
   constructor(private socketService: SocketService) { }
 
   ngOnInit(): void {
+    this.isAtie = false;
+    this.tiedWinners = [];
     this.popupIsOpen = false;
   }
 
@@ -41,17 +47,28 @@ export class ResultsPopupComponent implements OnInit {
   }
   open(voteResults: Array<any>, winners: Array<any>, cardText: string) : void {
     this.popupIsOpen = true;
+    this.cardToSend = cardText;
+
     if(winners.length == 1) {
       this.resultsText.nativeElement.textContent = this.parseVoteResults(voteResults, winners[0]);
-      this.socketService.sendVoteResultsToOtherPlayers(winners[0], cardText);
+      this.voteWinner = winners[0];
+      this.isAtie = false;
     }
     else {
-      alert("there was a tie");
+      this.tiedWinners = winners;
+      this.isAtie = true;
+      this.resultsText.nativeElement.textContent = "Looks like we got ouselves a good old Mexican standoff (there was a tie). Break the tie!";
     }
-    this.socketService.sendVoteResultsToOtherPlayers(winners[0], cardText);
   }
+
+  breakTie(selectedPlayer) : void {
+    this.voteWinner = selectedPlayer;
+    this.close();
+  }
+
   close() : void {
     this.popupIsOpen = false;
+    this.socketService.sendVoteResultsToOtherPlayers(this.voteWinner, this.cardToSend);
     this.socketService.giveUpTurn();
   }
 }
