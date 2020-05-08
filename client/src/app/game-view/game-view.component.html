@@ -1,52 +1,63 @@
 <div class="container">
 
-    <div class="row player-space justify-content-between">
-        <div class="col-8 card">
-            <div class="row">
-                <app-player-block class="col" *ngFor="let player of playerList;" [player]="player" [currMode] = "currMode" [cardVotingOn] = "votingPhrase" (voted)="onVoted()"></app-player-block>
-            </div>
-        </div>
-        <div class="col-4">
-            <app-room-code [lobbyCode]="getRoomCode()"></app-room-code>
-        </div>
+  <div class="row">
+    <div class="col">
+      <!-- <app-room-code [lobbyCode]="getRoomCode()"></app-room-code> -->
+      <h2 id="room-code">ROOM CODE: <span id="code">{{ getRoomCode() }}</span></h2>
     </div>
+  </div>
 
-    <div class = "row" #cards>
-        <div class="col-4 card-col">
-            <app-playing-card [currMode]="currMode" [cardData]="card1" [numPlayers]="playerList.length"></app-playing-card>
+  <div class="row player-space justify-content-between">
+    <div class="col">
+      <div class="card text-white bg-dark">
+        <div *ngIf="playerList.length > 0; else noPlayers" class="row">
+          <app-player-block class="col-4" *ngFor="let player of playerList;" [player]="player" [currMode]="currMode"
+          [cardVotingOn] = "votingPhrase" (voted)="onVoted()"></app-player-block>
         </div>
-        <div class="col-4 card-col">
-            <app-playing-card [currMode]="currMode" [cardData]="card2" [numPlayers]="playerList.length" [votingPhraseText] ="votingPhrase"></app-playing-card>
-        </div>
-        <div class="col-4 card-col">
-            <app-playing-card [currMode]="currMode" [cardData]="card3" [numPlayers]="playerList.length"></app-playing-card>
-        </div>
+      </div>
     </div>
+  </div>
 
-    <div class = "row">
-        <div class = "col">
-            <div id = "mycards">
-                <app-my-cards></app-my-cards>
-            </div>
-        </div>
+  <ng-template #noPlayers>
+    <h5 id="no-players">No other players :(</h5>
+  </ng-template>
+
+  <div class="row" #cards>
+    <div class="col-4 card-col">
+      <app-playing-card [currMode]="currMode" [cardData]="card1" [numPlayers]="playerList.length"></app-playing-card>
     </div>
-
-    <!-- Pop up boxes -->
-    <div class="row">
-        <div class="col">
-            <app-results-popup #resultsPopup></app-results-popup>
-        </div>
-        <div class="col">
-            <app-alert-popup #alertPopup></app-alert-popup>
-        </div>
+    <div class="col-4 card-col">
+      <app-playing-card [currMode]="currMode" [cardData]="card2" [numPlayers]="playerList.length"
+        [votingPhraseText]="votingPhrase"></app-playing-card>
     </div>
-    
+    <div class="col-4 card-col">
+      <app-playing-card [currMode]="currMode" [cardData]="card3" [numPlayers]="playerList.length"></app-playing-card>
+    </div>
+  </div>
 
-    <!-- <div class="row">
+  <div class="row">
+    <div class="col">
+      <div id="mycards">
+        <app-my-cards></app-my-cards>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pop up boxes -->
+  <div class="row">
+    <div class="col">
+      <app-results-popup #resultsPopup></app-results-popup>
+    </div>
+    <div class="col">
+      <app-alert-popup #alertPopup></app-alert-popup>
+    </div>
+  </div>
+
+
+  <!-- <div class="row">
         <div class="col">
             <app-chat></app-chat>
         </div>
     </div> -->
 
 </div>
-        

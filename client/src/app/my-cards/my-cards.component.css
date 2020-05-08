@@ -1,0 +1,11 @@
+button {
+    color: white;
+}
+
+.card-header {
+   background-color: #1f1f1f;
+}
+
+#myCards {
+    margin-bottom: 180px;
+}

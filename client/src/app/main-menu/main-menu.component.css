@@ -57,6 +57,11 @@ h3 {
 
 #codeInput {
     margin-bottom: 1%;
+    font-family: 'Roboto Mono', monospace;
+}
+
+#nameInput {
+    margin-bottom: 1%;
 }
 
 .buttonPadding {
