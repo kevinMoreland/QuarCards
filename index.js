@@ -67,32 +67,35 @@ function clearVotingInfo() {
 }
 function determineVoteWinner(voteResults) {
     var reachedArrElements = [];
-    var tieCheckerArray = [];
-    var playerWithMaxVotes = voteResults[0];
+    var playersWithMaxVotes = [];
     var maxVotes = -1;
-    var isATie = false;
 
+    //find the maximum number of votes a player or players (if a tie) have recieved
     voteResults.forEach(function (player) {
         if(!reachedArrElements.includes(player.name)){
             var numVotes = voteResults.filter((value) => value.name == player.name).length;
-
             if(numVotes > maxVotes) {
                 maxVotes = numVotes;
-                playerWithMaxVotes = player;
             }
-            //if there is a tie at the end, tieChecker array will contain a value equal to maxVotes after this loop completes
-            else if(numVotes == maxVotes) {
-                tieCheckerArray.push(numVotes);
-            }
-            
             reachedArrElements.push(player.name);
         }
     });
 
-    if(tieCheckerArray.includes(maxVotes)) {
-        isATie = true;
-    }
-    return [playerWithMaxVotes, isATie];
+    //reset array for use in next loop
+    reachedArrElements = [];
+
+    //find all the players who have tied with numVotes = maxVotes
+    voteResults.forEach(function (player) {
+        if(!reachedArrElements.includes(player.name)){
+            var numVotes = voteResults.filter((value) => value.name == player.name).length;
+            if(numVotes == maxVotes) {
+                playersWithMaxVotes.push(player);
+            }            
+            reachedArrElements.push(player.name);
+        }
+    });
+
+    return playersWithMaxVotes;
 }
 
 if (process.argv.includes('--dev')) {
@@ -266,24 +269,22 @@ io.on('connection', function(socket) {
         if(voteResults.length >= numVotingPlayers){
             console.log("sending vote results...");
 
-            //give card to whoever was voted for
-
-            //determineVoteWinner returns [(voteWinner: player), (isATie: true/false)]
-            var voteResultsArray = determineVoteWinner(voteResults);
-            var voteWinner = voteResultsArray[0];
-            var isATie = voteResultsArray[1];
-
-            sessions[code].playerQueue.givePlayerCard(cardVotingOn, voteWinner.Id);
-
-            io.to(code).emit('serverSendVoteResults', voteResults, voteWinner, isATie);
-            
-            //update player list so votes update
-            var playerList = sessions[code].playerQueue.asArray();
-            io.to(code).emit('serverUpdatePlayerList', playerList);
-
-            //alert winner that they have a new card
-            io.to(voteWinner.Id).emit('serverSendUpdatedCards', sessions[code].playerQueue.getPlayerCards(voteWinner.Id));
+            //voteWinner(s) plural because there may have been a tie
+            var voteWinners = determineVoteWinner(voteResults);
+     
+            //send vote results to whoevers turn it was, and in the case of a tie, let them settle it
+            io.to(code).emit('serverSendVoteResults', voteResults, voteWinners, cardVotingOn);
         }
+    });
+
+    socket.on('clientEndingTurn', function(code, voteWinner, cardVotingOn){
+        //alert winner that they have a new card
+        sessions[code].playerQueue.givePlayerCard(cardVotingOn, voteWinner.Id);
+        io.to(voteWinner.Id).emit('serverSendUpdatedCards', sessions[code].playerQueue.getPlayerCards(voteWinner.Id));
+
+        //update player list so votes update
+        var playerList = sessions[code].playerQueue.asArray();
+        io.to(code).emit('serverUpdatePlayerList', playerList);
     });
 
     socket.on('clientRequestCard', async function() {

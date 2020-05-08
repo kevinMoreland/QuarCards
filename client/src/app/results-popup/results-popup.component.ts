@@ -18,7 +18,7 @@ export class ResultsPopupComponent implements OnInit {
   }
 
   //TODO handle ties
-  parseVoteResults(voteResults: Array<any>, winner : any, isATie: boolean) : string {
+  parseVoteResults(voteResults: Array<any>, winner : any) : string {
     var parsedResults = "";
     var reachedArrElements = [];
 
@@ -36,16 +36,19 @@ export class ResultsPopupComponent implements OnInit {
     
     
     parsedResults += ("\n" + winner.name + " wins the card.");
-    if(isATie) {
-      parsedResults += "\n(we broke the tie by picking who we like the best)";
-    }
     parsedResults += ("\n\nReveal the results to the other players!");
     return parsedResults;
   }
-  open(voteResults: Array<any>, winner: string, isATie: boolean) : void {
+  open(voteResults: Array<any>, winners: Array<any>, cardText: string) : void {
     this.popupIsOpen = true;
-    this.resultsText.nativeElement.textContent = this.parseVoteResults(voteResults, winner, isATie);
-
+    if(winners.length == 1) {
+      this.resultsText.nativeElement.textContent = this.parseVoteResults(voteResults, winners[0]);
+      this.socketService.sendVoteResultsToOtherPlayers(winners[0], cardText);
+    }
+    else {
+      alert("there was a tie");
+    }
+    this.socketService.sendVoteResultsToOtherPlayers(winners[0], cardText);
   }
   close() : void {
     this.popupIsOpen = false;
