@@ -10,6 +10,9 @@ html, body {
     padding: 10px;
     padding-bottom: 20px;
 }
+.player-block-container {
+    background-color: #343a40;
+}
 .player-space{
     /* margin-top: 10px; */
     margin-bottom: 20px;

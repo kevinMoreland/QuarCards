@@ -9,7 +9,7 @@
 
   <div class="row player-space justify-content-between">
     <div class="col">
-      <div class="card text-white bg-dark">
+      <div class="card text-white player-block-container">
         <div *ngIf="playerList.length > 0; else noPlayers" class="row">
           <app-player-block class="col-4" *ngFor="let player of playerList;" [player]="player" [currMode]="currMode"
           [cardVotingOn] = "votingPhrase" (voted)="onVoted()"></app-player-block>
