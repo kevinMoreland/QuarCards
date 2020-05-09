@@ -10,10 +10,16 @@ export class ResultsPopupComponent implements OnInit {
   @ViewChild("resultsText", {read: ElementRef}) resultsText: ElementRef;
 
   popupIsOpen : boolean;
+  voteWinner : any;
+  cardToSend : string;
+  tiedWinners : Array<any>;
+  isAtie : boolean;
 
   constructor(private socketService: SocketService) { }
 
   ngOnInit(): void {
+    this.isAtie = false;
+    this.tiedWinners = [];
     this.popupIsOpen = false;
   }
 
@@ -28,22 +34,41 @@ export class ResultsPopupComponent implements OnInit {
     voteResults.forEach(function (player) {
       if(!reachedArrElements.includes(player.name)){
         var numVotes = voteResults.filter((value) => value.name == player.name).length;
-        parsedResults += (player.name + " has " + numVotes + " votes! \n");
+        parsedResults += (player.name + " got " + numVotes + " votes! \n");
 
         reachedArrElements.push(player.name);
       }
     });
-
-    parsedResults += ("\n" + winner.name + " wins the card.\nReveal the results to the other players!");
+    
+    
+    parsedResults += ("\n" + winner.name + " wins the card.");
+    parsedResults += ("\n\nReveal the results to the other players!");
     return parsedResults;
   }
-  open(voteResults: Array<any>, winner: string) : void {
+  open(voteResults: Array<any>, winners: Array<any>, cardText: string) : void {
     this.popupIsOpen = true;
-    this.resultsText.nativeElement.textContent = this.parseVoteResults(voteResults, winner);
+    this.cardToSend = cardText;
 
+    if(winners.length == 1) {
+      this.resultsText.nativeElement.textContent = this.parseVoteResults(voteResults, winners[0]);
+      this.voteWinner = winners[0];
+      this.isAtie = false;
+    }
+    else {
+      this.tiedWinners = winners;
+      this.isAtie = true;
+      this.resultsText.nativeElement.textContent = "Looks like we got ouselves a good old Mexican standoff (there was a tie). Break the tie!";
+    }
   }
+
+  breakTie(selectedPlayer) : void {
+    this.voteWinner = selectedPlayer;
+    this.close();
+  }
+
   close() : void {
     this.popupIsOpen = false;
+    this.socketService.sendVoteResultsToOtherPlayers(this.voteWinner, this.cardToSend);
     this.socketService.giveUpTurn();
   }
 }

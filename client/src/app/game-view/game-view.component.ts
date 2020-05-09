@@ -90,13 +90,16 @@ export class GameViewComponent implements OnInit {
   }
   
   initVoteResultsSubscription() : void {
-    //subscription returns an array with overall results at index 0 and the winner as a player's name at index 1
+    //subscription returns an array with [overallResults including number votes each player got, 
+    //                                    array of all winners (multiple in case of a tie),
+    //                                    the text of the card that was voted on]
     this.voteResultsSubscription = this.socketService.getVoteResults().subscribe((results) => {
       var overallResults = results[0];
-      var winner = results[1];
+      var winners = results[1];
+      var cardText = results[2];
 
       if(this.isTurn) {
-        this.resultsPopup.open(overallResults, winner);
+        this.resultsPopup.open(overallResults, winners, cardText);
       }
       else {
         this.alertPopup.open("Voting done!", "Wait for this round's card reader to reveal the results with the group");

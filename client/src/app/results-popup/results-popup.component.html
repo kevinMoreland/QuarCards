@@ -8,7 +8,12 @@
           <p #resultsText></p>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-success" data-dismiss="modal" (click)="close()">End Turn</button>
+          <button *ngIf="!isAtie" type="button" class="btn btn-success" data-dismiss="modal" (click)="close()">End Turn</button>
+          <div class = "row" *ngIf="isAtie">
+            <div class="col-6 tie-break-col" *ngFor="let player of tiedWinners;">
+              <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="breakTie(player)">{{player.name}}</button>
+            </div>
+          </div>
         </div>
       </div>
     </div>

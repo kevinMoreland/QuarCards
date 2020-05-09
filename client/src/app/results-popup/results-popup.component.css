@@ -5,3 +5,7 @@
 .modal-body p {
     font-family: 'Roboto Slab', serif;
 }
+
+.tie-break-col {
+    padding-bottom: 5px;
+}

@@ -163,9 +163,9 @@ export class SocketService {
   //wait for the voting results for the round
   getVoteResults() : Observable<Array<any>>{
     let observable = new Observable<Array<any>>( observer => {
-      this.socket.on('serverSendVoteResults', (results, winner) => {
+      this.socket.on('serverSendVoteResults', (results, winners, cardVotingOn) => {
 
-        observer.next([results, winner]);
+        observer.next([results, winners, cardVotingOn]);
       });
       return () => {
         this.disconnectSocket();
@@ -195,6 +195,10 @@ export class SocketService {
 
   submitVote(playerVotedFor, cardVotingOn : String) : void{
     this.socket.emit('clientSendVote', this.connectedRoom, playerVotedFor, cardVotingOn, this.socket.id);
+  }
+
+  sendVoteResultsToOtherPlayers(voteWinner, cardVotingOn){
+    this.socket.emit('clientEndingTurn', this.connectedRoom, voteWinner, cardVotingOn);
   }
 
   //get the list of all players excluding current player
