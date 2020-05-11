@@ -32,8 +32,9 @@ export class SocketService {
       return;
     }
     //var hostname = 'http://localhost:3000';
-    var hostname = 'https://strawberry-sundae-17314.herokuapp.com';
+    //var hostname = 'https://strawberry-sundae-17314.herokuapp.com';
     //var hostname = 'http://localhost:5000';
+    var hostname = 'http://www.qcards.us';
 
     this.socket = io(hostname);
   }
