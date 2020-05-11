@@ -315,7 +315,8 @@ class CardService {
         this.http = http;
         this.socketService = socketService;
         //hostName: String = 'http://localhost:3000';
-        this.hostName = 'https://strawberry-sundae-17314.herokuapp.com';
+        //hostName = 'https://strawberry-sundae-17314.herokuapp.com';
+        this.hostName = 'http://www.qcards.us';
     }
     getCards() {
         return this.http.get(`${this.hostName}/api/cards`);
@@ -803,7 +804,8 @@ class LobbyService {
     constructor(http) {
         this.http = http;
         //hostname: string = 'http://localhost:3000';
-        this.hostname = 'https://strawberry-sundae-17314.herokuapp.com';
+        //hostname = 'https://strawberry-sundae-17314.herokuapp.com';
+        this.hostname = 'http://www.qcards.us';
     }
     checkRoom(lobbyCode) {
         return this.http.get(`${this.hostname}/api/checkRoom/${lobbyCode}`, { responseType: 'text' });
@@ -1722,8 +1724,9 @@ class SocketService {
             return;
         }
         //var hostname = 'http://localhost:3000';
-        var hostname = 'https://strawberry-sundae-17314.herokuapp.com';
+        //var hostname = 'https://strawberry-sundae-17314.herokuapp.com';
         //var hostname = 'http://localhost:5000';
+        var hostname = 'http://www.qcards.us';
         this.socket = socket_io_client__WEBPACK_IMPORTED_MODULE_1__(hostname);
     }
     getIsConnected() {

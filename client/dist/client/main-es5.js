@@ -603,8 +603,9 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
         this.http = http;
         this.socketService = socketService; //hostName: String = 'http://localhost:3000';
+        //hostName = 'https://strawberry-sundae-17314.herokuapp.com';
 
-        this.hostName = 'https://strawberry-sundae-17314.herokuapp.com';
+        this.hostName = 'http://www.qcards.us';
       }
 
       _createClass(CardService, [{
@@ -1537,8 +1538,9 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
         _classCallCheck(this, LobbyService);
 
         this.http = http; //hostname: string = 'http://localhost:3000';
+        //hostname = 'https://strawberry-sundae-17314.herokuapp.com';
 
-        this.hostname = 'https://strawberry-sundae-17314.herokuapp.com';
+        this.hostname = 'http://www.qcards.us';
       }
 
       _createClass(LobbyService, [{
@@ -3343,10 +3345,11 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
           if (this.socket) {
             return;
           } //var hostname = 'http://localhost:3000';
+          //var hostname = 'https://strawberry-sundae-17314.herokuapp.com';
+          //var hostname = 'http://localhost:5000';
 
 
-          var hostname = 'https://strawberry-sundae-17314.herokuapp.com'; //var hostname = 'http://localhost:5000';
-
+          var hostname = 'http://www.qcards.us';
           this.socket = socket_io_client__WEBPACK_IMPORTED_MODULE_1__(hostname);
         }
       }, {
