@@ -63,7 +63,9 @@ h3 {
 #nameInput {
     margin-bottom: 1%;
 }
-
+#infoButtonContainer{
+    padding-top: 5px;
+}
 .buttonPadding {
     padding-top: 1.2%;
     padding-bottom: 1.2%;

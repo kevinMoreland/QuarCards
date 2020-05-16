@@ -22,8 +22,14 @@
     </div>
   </div>
   <div class="row" *ngIf="!this.showNameField">
-    <div class="col">
+    <div class="col-12">
       <button type="button" class="btn btn-lg btn-info joinForm buttonPadding" id="joinButton" (click)="onJoinGame()">Join your friend's game!</button>
+    </div>
+    <div class="col-12">
+      <h2 class="separator" style="white-space:nowrap; overflow:hidden;">----------------</h2>
+    </div>
+    <div class="col-12">
+      <button type="button" class="btn btn-lg btn-info buttonPadding" id="infoButton" (click)="onStartGame()">How to Play</button>
     </div>
   </div>
 
@@ -37,7 +43,7 @@
       <input type="text" class="form-control-lg joinForm" id="nameInput" [(ngModel)]="name" aria-label="Username" aria-describedby="basic-addon1">
     </div>
   </div>
-  <div class="row" *ngIf="this.showNameField">
+  <div class="row" *ngIf="this.showNameField" id ="infoButtonContainer">
     <div class="col">
       <button type="button" class="btn btn-lg btn-success joinForm buttonPadding" id="joinButton" (click)="onEnterName()">Enter game</button>
     </div>
