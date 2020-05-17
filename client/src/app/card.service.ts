@@ -10,9 +10,9 @@ import { SocketService } from './socket.service';
 })
 
 export class CardService {
-  //hostName: String = 'http://localhost:3000';
+  hostName: String = 'http://localhost:3000';
   //hostName = 'https://strawberry-sundae-17314.herokuapp.com';
-  hostName = 'http://www.qcards.us';
+  //hostName = 'http://www.qcards.us';
 
   constructor(private http: HttpClient, private socketService: SocketService) { }
 

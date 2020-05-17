@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ɵSWITCH_RENDERER2_FACTORY__POST_R3__ } from '@angular/core';
 import { SocketService } from '../socket.service';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { LobbyService } from '../lobby.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { AlertPopupComponent } from '../alert-popup/alert-popup.component';
 
 @Component({
   selector: 'app-main-menu',
@@ -11,6 +12,8 @@ import { HttpErrorResponse } from '@angular/common/http';
   styleUrls: ['./main-menu.component.css']
 })
 export class MainMenuComponent implements OnInit {
+  @ViewChild(AlertPopupComponent) alertPopup: AlertPopupComponent;
+
   lobbyCode: string;
   isConnectedSubscription: Subscription;
   showNameField: boolean;
@@ -34,6 +37,19 @@ export class MainMenuComponent implements OnInit {
   onStartGame() {
     this.invalidRoom = false;
     this.showNameField = true;
+  }
+
+  onGetGameInfo() {
+    var gameExplanation : string = "Quarantine Cards is a virtual card game created by 2 Cal Poly studs in the hopes of entertaining and connecting our fellow college students. Here's how it works:";
+    var step1 : string = "1. Get all your friends in a game using your game's room code";
+    var step2 : string = "2. When it's your turn, you will have the option to pick 1 of 3 cards";
+    var step3 : string = "3. Your friends will vote for who they think the card best matches with";
+    var step4 : string = "4. If there is a tie, you will be in charge of breaking it!";
+    var step5 : string = "5. Play as many rounds as you like"
+    var step5 : string = "5. Tell more people about our game :->"
+
+    var newLine : string = "\n";
+    this.alertPopup.open("How To Play", gameExplanation + "\n\n" + step1 + "\n" + step2 + "\n" + step3 + "\n" +step4 + "\n" + step5);
   }
 
   onJoinGame() {

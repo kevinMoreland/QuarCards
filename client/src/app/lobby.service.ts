@@ -6,9 +6,9 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class LobbyService {
-  //hostname: string = 'http://localhost:3000';
+  hostname: string = 'http://localhost:3000';
   //hostname = 'https://strawberry-sundae-17314.herokuapp.com';
-  hostname = 'http://www.qcards.us';
+  //hostname = 'http://www.qcards.us';
 
   constructor(private http : HttpClient) { }
 

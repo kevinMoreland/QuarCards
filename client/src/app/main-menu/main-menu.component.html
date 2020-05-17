@@ -29,7 +29,7 @@
       <h2 class="separator" style="white-space:nowrap; overflow:hidden;">----------------</h2>
     </div>
     <div class="col-12">
-      <button type="button" class="btn btn-lg btn-info buttonPadding" id="infoButton" (click)="onStartGame()">How to Play</button>
+      <button type="button" class="btn btn-lg btn-info buttonPadding" id="infoButton" (click)="onGetGameInfo()">How to Play</button>
     </div>
   </div>
 
@@ -46,6 +46,13 @@
   <div class="row" *ngIf="this.showNameField" id ="infoButtonContainer">
     <div class="col">
       <button type="button" class="btn btn-lg btn-success joinForm buttonPadding" id="joinButton" (click)="onEnterName()">Enter game</button>
+    </div>
+  </div>
+
+  <!-- Pop up boxes -->
+  <div class="row">
+    <div class="col">
+      <app-alert-popup #alertPopup></app-alert-popup>
     </div>
   </div>
 </div>
